@@ -67,11 +67,11 @@ void Camera::Update()
 	XMVECTOR positionVec = XMLoadFloat3(&position);
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		positionVec = positionVec + directionVec * 0.05f;
+		positionVec = positionVec + upVec * 0.005f;
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
-		positionVec = positionVec - directionVec * 0.05f;
+		positionVec = positionVec - upVec * 0.005f;
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
@@ -81,7 +81,8 @@ void Camera::Update()
 	{
 		positionVec = positionVec + XMVector3Cross(upVec, directionVec) * 0.001f;
 	}
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+
+	/*if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
 		positionVec = positionVec + upVec * 0.05f;
 
@@ -90,7 +91,7 @@ void Camera::Update()
 	{
 		positionVec = positionVec - upVec * 0.05f;
 	}
-
+	*/
 	XMStoreFloat3(&position, positionVec);
 	XMMATRIX asd;
 	asd = XMMatrixLookToLH(positionVec, directionVec, upVec);
