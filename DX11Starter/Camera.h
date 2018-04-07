@@ -20,7 +20,8 @@ public:
 	void Update();
 	void UpdateXAxis(float x);
 	void UpdateYAxis(float y);
-
+	XMFLOAT3 getpositionvec();
+	XMFLOAT3 getdirectionvec();
 private:
 	//transformation
 	XMFLOAT3 position;

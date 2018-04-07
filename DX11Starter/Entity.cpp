@@ -66,7 +66,7 @@ void Entity::UpdateWorldMatrix()
 	XMMATRIX rotZ = XMMatrixRotationZ(rotation.z);
 	XMMATRIX sMatrix = XMMatrixScaling(scale.x,scale.y,scale.z);
 	
-	XMMATRIX world = trans*rotX*rotY*rotZ*sMatrix;
+	XMMATRIX world = sMatrix * rotZ*rotY*rotX*trans;
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(world));
 }
 

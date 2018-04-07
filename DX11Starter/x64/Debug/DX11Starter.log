@@ -1,2 +1,26 @@
-﻿  Camera.cpp
-  DX11Starter.vcxproj -> C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\DX11Starter.exe
+﻿  compilation object save succeeded; see Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\ParticlePixelShader.cso
+  compilation object save succeeded; see Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\ParticleVertexShader.cso
+  compilation object save succeeded; see Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\PixelShader.cso
+  compilation object save succeeded; see Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\VertexShader.cso
+  compilation object save succeeded; see Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\VertexShader1.cso
+  SimpleShader.cpp
+  Mesh.cpp
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(25): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Material.cpp
+  Main.cpp
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(25): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Game.cpp
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(25): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Entity.cpp
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(25): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\entity.cpp(32): warning C4305: 'argument': truncation from 'double' to 'float'
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\entity.cpp(37): warning C4305: 'argument': truncation from 'double' to 'float'
+  Emitter.cpp
+  DXCore.cpp
+  Camera.cpp
+  Generating Code...
+  DX11Starter.vcxproj -> Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\DX11Starter.exe

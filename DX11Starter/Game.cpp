@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Vertex.h"
-
+#include <iostream>
+using namespace std;
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -32,7 +33,12 @@ Game::Game(HINSTANCE hInstance)
 #endif
 	
 }
-
+float shame;
+float shame1;
+bool flaga = false;
+bool flagb = false;
+bool flagc = false;
+bool flagd = false;
 // --------------------------------------------------------
 // Destructor - Clean up anything our game has created:
 //  - Release all DirectX objects created here
@@ -147,7 +153,7 @@ void Game::LoadShaders()
 	//Create Texttures
 	material0 = new Material(vertexShader, pixelShader, device, context, L"GrassTest.jpg", L"terrainnormal.jpg");
 	material1 = new Material(vertexShader, pixelShader,device,context,L"rock.jpg", L"rockNormals.jpg");
-	material2 = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
+	material2 = new Material(vertexShader, pixelShader, device, context, L"T2.bmp", L"rockNormals.jpg");
 	material3 = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
 
 }
@@ -210,7 +216,7 @@ void Game::CreateBasicGeometry()
 	//m_mesh1 = new Mesh(vertices1, 3, indices1, 3, device);
 	//m_mesh2 = new Mesh(vertices2, 4, indices2, 6, device);
 	m_mesh1 = new Mesh("cone.obj", device);
-	m_mesh2 = new Mesh("sphere.obj", device);
+	m_mesh2 = new Mesh("gaiguode.obj", device);
 	m_mesh0 = new Mesh("terrain-heightmap.bmp", device);
 	entity0 = new Entity(m_mesh0, material0);
 	entity1 = new Entity(m_mesh1,material1);
@@ -224,7 +230,7 @@ void Game::CreateCamera()
 	camera = new Camera();
 
 }
-
+float rot = 0;
 void Game::Createshadowmap()
 {
 	
@@ -319,7 +325,9 @@ void Game::OnResize()
 	XMMATRIX P = XMLoadFloat4x4(&camera->GetProjectionMatrix());
 	XMStoreFloat4x4(&projectionMatrix, P); // Transpose for HLSL!
 }
-
+float rotx = 0;
+float roty = 0;
+float rotz = 0;		
 // --------------------------------------------------------
 // Update your game here - user input, move objects, AI, etc.
 // --------------------------------------------------------
@@ -336,14 +344,37 @@ void Game::Update(float deltaTime, float totalTime)
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
 	entity0->SetPosition(-100.0f, -10.0f, -20.0f);
-	entity1->SetPosition(0+ sin(totalTime), 0 + sin(totalTime), 0 + sin(totalTime));
-	entity2->SetRotation(0, totalTime/2,0);
-
+	entity1->SetPosition(0, 0 , 0 );
+	
+	  
+ 
 	entity3->SetScale((float)0.5 + sin(totalTime), (float)0.5 + sin(totalTime), (float)0.5 + sin(totalTime));
 	campfireEmitter->Update(deltaTime);
-
+ 
 	//update the camera
 	camera->Update();
+	 
+	if (flaga == true) {
+		roty = roty + shame1;
+		flaga = false;
+	}
+	if (flagb == true) {
+		roty = roty + shame1;
+		flagb = false;
+	}
+	if (flagc == true) {
+		rotx = rotx + shame;
+		flagc = false;
+	}
+	if (flagd == true) {
+		rotx = rotx + shame;
+		flagd = false;
+	}
+ 
+	entity2->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
+ 
+	entity2->SetRotation( rotx,-90+roty, rotz);
+	 
 	XMMATRIX V = XMLoadFloat4x4(&camera->GetViewMatrix());
 	XMStoreFloat4x4(&viewMatrix, V); // Transpose for HLSL!
 }
@@ -536,6 +567,34 @@ void Game::UpdateCameraAxis(int x,int y)
 	float deltaY = (float)(y - prevMousePos.y);
 	float deltaXAxis = deltaY / 300;
 	float deltaYAxis = deltaX / 300;
+ 
+
+	if (flagc == false && flagd == false) {
+		shame = deltaXAxis;
+		if (deltaXAxis > 0) {
+
+			flagc = true;
+		}
+		else if (deltaXAxis < 0) {
+			flagd = true;
+
+
+		}
+	}
+
+
+	if (flaga==false&&flagb==false) {
+		shame1 = deltaYAxis;
+		if (deltaYAxis > 0) {
+			
+			flaga = true;
+		}
+		else if (deltaYAxis < 0) {
+			flagb = true;
+
+
+		}
+	}
 	camera->UpdateXAxis(deltaXAxis);
 	camera->UpdateYAxis(deltaYAxis);
 }
