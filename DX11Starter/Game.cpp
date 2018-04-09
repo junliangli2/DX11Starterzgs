@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Vertex.h"
 #include <iostream>
+#include<vector>
 using namespace std;
 
 // For the DirectX Math library
@@ -12,6 +13,10 @@ using namespace DirectX;
 // DXCore (base class) constructor will set up underlying fields.
 // DirectX itself, and our window, are not ready yet!
 //
+
+vector<Entity*> etts;
+ 
+float qwe1=0;
 // hInstance - the application's OS-level handle (unique ID)
 // --------------------------------------------------------
 Game::Game(HINSTANCE hInstance)
@@ -73,6 +78,20 @@ Game::~Game()
 	particleBlendState->Release();
 	particleDepthState->Release();
 	particleSRV->Release();
+	if (etts.size() > 0) {
+		for (int i = 0; i < etts.size(); i++) {
+			delete etts.at(i)->GetMesh();
+			delete etts.at(i);
+
+
+
+
+		}
+
+
+
+
+}
 	//device->Release();
 	
 	//delete material1;
@@ -219,6 +238,7 @@ void Game::CreateBasicGeometry()
 	m_mesh2 = new Mesh("gaiguode.obj", device);
 	m_mesh0 = new Mesh("terrain-heightmap.bmp", device);
 	entity0 = new Entity(m_mesh0, material0);
+	
 	entity1 = new Entity(m_mesh1,material1);
 	entity2 = new Entity(m_mesh2,material2);
 	entity3 = new Entity(m_mesh1,material3);
@@ -333,6 +353,9 @@ float rotz = 0;
 // --------------------------------------------------------
 void Game::Update(float deltaTime, float totalTime)
 {
+
+
+
 	XMMATRIX shProj = XMMatrixOrthographicLH(60, 60, 0.1f, 300.0f);
 	XMMATRIX shView = XMMatrixLookAtLH(
 		XMVectorSet(0, 20,-20, 0),
@@ -528,6 +551,42 @@ void Game::Draw(float deltaTime, float totalTime)
 		0);    // Offset to add to each index when looking up vertices
 
 	//draw the thrid one
+
+
+	if (GetAsyncKeyState('Q')) {
+		Mesh *m_mesh100 = new Mesh("cone.obj", device);
+		Material * mtrl= new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
+		Entity *entity123 = new Entity(m_mesh100, mtrl);
+		qwe1 += 1;
+		entity123->SetPosition(qwe1, qwe1, qwe1);
+		etts.push_back(entity123);
+	 
+		
+		 
+		
+	}
+
+	if (etts.size() > 0) {
+		for (int i = 0; i < etts.size(); i++) {
+			etts.at(i)->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
+			ID3D11Buffer* vertexBuffer3 = etts.at(i)->GetMesh()->GetVertexBuffer();
+			ID3D11Buffer* indexBuffer3 = etts.at(i)->GetMesh()->GetIndexBuffer();
+			context->IASetVertexBuffers(0, 1, &vertexBuffer3, &stride, &offset);
+			context->IASetIndexBuffer(indexBuffer3, DXGI_FORMAT_R32_UINT, 0);
+			context->DrawIndexed(
+				etts.at(i)->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+				0,     // Offset to the first index we want to use
+				0);    // O
+
+
+		}
+
+
+	}
+
+
+
+
 	entity3->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
 

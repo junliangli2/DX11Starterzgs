@@ -16,6 +16,9 @@ class Entity
 public:
 	Entity();
 	Entity(Mesh* meshObj, Material* materialObj);
+	Entity&operator = (const Entity &t)
+	{
+	}
 	~Entity();
 
 
