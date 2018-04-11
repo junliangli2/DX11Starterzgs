@@ -1,9 +1,10 @@
 #include "Camera.h"
+#include<iostream>
 
 
 // For the DirectX Math library
 using namespace DirectX;
-
+using namespace std;
 Camera::~Camera()
 {
 }
@@ -101,8 +102,10 @@ void Camera::Update()
 	{
 		positionVec = positionVec - upVec * 0.001f;
 	}
-	
+	XMStoreFloat3(&direction, directionVec);
+	 
 	XMStoreFloat3(&position, positionVec);
+	
 	XMMATRIX asd;
 	asd = XMMatrixLookToLH(positionVec, directionVec, upVec);
 	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(asd));

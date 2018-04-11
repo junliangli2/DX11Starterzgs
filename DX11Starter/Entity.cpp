@@ -1,7 +1,7 @@
 #include "Entity.h"
-
+#include <iostream>
 using namespace DirectX;
-
+using namespace std;
 Entity::~Entity()
 {
 	delete material;
@@ -27,7 +27,23 @@ Entity::Entity(Mesh* meshObj, Material* materialObj)
 	InitLights();
 }
 
-void Entity::InitLights()
+Entity::Entity(Mesh * meshObj, Material * materialObj, XMFLOAT3 direction)
+{
+	mesh = meshObj;
+	material = materialObj;
+	samplerState = material->GetSamplerState();
+	shaderRV = material->GetShaderRV();
+	normalRV = material->GetNormalRV();
+	position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	dir = direction;
+	time = GetTickCount();
+	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
+	InitLights();
+}
+
+void Entity::InitLights()     
 {
 	directionLight1.AmbientColor = XMFLOAT4(0.1, 0.1, 0.8, 1.0);
 	directionLight1.DiffuseColor = XMFLOAT4(.4F, .5f, .4f, 1.0);
@@ -38,6 +54,17 @@ void Entity::InitLights()
 	directionLight2.DiffuseColor = XMFLOAT4(0, .4f, 0, 0);
 	directionLight2.Direction = XMFLOAT3(0, 0, 1);
 
+}
+
+void Entity::move(int scale)
+{
+	position.x += dir.x/ scale;
+ 
+	position.y += dir.y/ scale;
+	 
+	position.z += dir.z/ scale;
+	 
+	UpdateWorldMatrix();
 }
 
 void Entity::SetPosition(float x, float y, float z)

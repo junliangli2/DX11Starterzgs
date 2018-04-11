@@ -371,7 +371,6 @@ void Game::Update(float deltaTime, float totalTime)
 	
 	  
  
-	entity3->SetScale((float)0.5 + sin(totalTime), (float)0.5 + sin(totalTime), (float)0.5 + sin(totalTime));
 	campfireEmitter->Update(deltaTime);
  
 	//update the camera
@@ -553,36 +552,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	//draw the thrid one
 
 
-	if (GetAsyncKeyState('Q')) {
-		Mesh *m_mesh100 = new Mesh("cone.obj", device);
-		Material * mtrl= new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
-		Entity *entity123 = new Entity(m_mesh100, mtrl);
-		qwe1 += 1;
-		entity123->SetPosition(qwe1, qwe1, qwe1);
-		etts.push_back(entity123);
-	 
-		
-		 
-		
-	}
-
-	if (etts.size() > 0) {
-		for (int i = 0; i < etts.size(); i++) {
-			etts.at(i)->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
-			ID3D11Buffer* vertexBuffer3 = etts.at(i)->GetMesh()->GetVertexBuffer();
-			ID3D11Buffer* indexBuffer3 = etts.at(i)->GetMesh()->GetIndexBuffer();
-			context->IASetVertexBuffers(0, 1, &vertexBuffer3, &stride, &offset);
-			context->IASetIndexBuffer(indexBuffer3, DXGI_FORMAT_R32_UINT, 0);
-			context->DrawIndexed(
-				etts.at(i)->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-				0,     // Offset to the first index we want to use
-				0);    // O
-
-
-		}
-
-
-	}
+	
 
 
 
@@ -602,6 +572,64 @@ void Game::Draw(float deltaTime, float totalTime)
 		entity3->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
 		0,     // Offset to the first index we want to use
 		0);    // Offset to add to each index when looking up vertices
+
+
+
+
+
+	if (GetAsyncKeyState(VK_LBUTTON)) {
+		
+		
+		
+		
+		
+		
+		if (etts.size() == 0) {
+			Mesh *m_mesh100 = new Mesh("cone.obj", device);
+			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
+			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
+			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
+			etts.push_back(entity123);
+		}
+
+		else if(GetTickCount() - etts.back()->time > 500) {
+			Mesh *m_mesh100 = new Mesh("cone.obj", device);
+			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
+			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
+			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
+			etts.push_back(entity123);
+			}
+	
+
+
+
+	}
+
+	if (etts.size() > 0) {
+		for (int i = 0; i < etts.size(); i++) {
+			if (GetAsyncKeyState(VK_SHIFT)) {
+				etts.at(i)->move(1000);
+			}
+			else { etts.at(i)->move(100); }
+			
+			etts.at(i)->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
+			ID3D11Buffer* vertexBuffer30 = etts.at(i)->GetMesh()->GetVertexBuffer();
+			ID3D11Buffer* indexBuffer30 = etts.at(i)->GetMesh()->GetIndexBuffer();
+			context->IASetVertexBuffers(0, 1, &vertexBuffer30, &stride, &offset);
+			context->IASetIndexBuffer(indexBuffer30, DXGI_FORMAT_R32_UINT, 0);
+			context->DrawIndexed(
+				etts.at(i)->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+				0,     // Offset to the first index we want to use
+				0);    // O
+
+
+		}
+
+
+	}
+
+
+
 
 	pixelShader->SetShaderResourceView("ShadowMap", 0);
 	context->RSSetState(0);

@@ -1,4 +1,6 @@
-﻿  Game.cpp
-d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  DX11Starter.vcxproj -> D:\Users\User\Documents\GitHub\DX11Starterzgs\x64\Debug\DX11Starter.exe
+﻿  compilation object save succeeded; see Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\ParticlePixelShader.cso
+  Game.cpp
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+z:\igmprofile\documents\github\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  DX11Starter.vcxproj -> Z:\IGMProfile\Documents\GitHub\DX11Starterzgs\x64\Debug\DX11Starter.exe

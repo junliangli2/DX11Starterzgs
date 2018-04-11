@@ -11,7 +11,8 @@
 #include <string>
 
 // --------------------------------------------------------
-// Used by simple shaders to store information about
+// Used by simple shaders to \
+ information about
 // specific variables in constant buffers
 // --------------------------------------------------------
 struct SimpleShaderVariable
