@@ -585,17 +585,19 @@ void Game::Draw(float deltaTime, float totalTime)
 		
 		
 		if (etts.size() == 0) {
-			Mesh *m_mesh100 = new Mesh("cone.obj", device);
-			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
+			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
+			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
 			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
+			entity123->SetScale(.01f, .01f, .01f);
 			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
 			etts.push_back(entity123);
 		}
 
 		else if(GetTickCount() - etts.back()->time > 500) {
-			Mesh *m_mesh100 = new Mesh("cone.obj", device);
-			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
+			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
+			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
 			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
+			entity123->SetScale(.01f, .01f, .01f);
 			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
 			etts.push_back(entity123);
 			}
