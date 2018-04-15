@@ -181,6 +181,7 @@ Mesh::Mesh(char * fileName, ID3D11Device * device)
 
 	else if (strcmp(name, ".bmp") == 0)
 	{
+		
 		int error, imageSize, i, j, k, index;
 		FILE* filePtr;
 		unsigned long long count;
@@ -291,7 +292,7 @@ Mesh::Mesh(char * fileName, ID3D11Device * device)
 		indices = new unsigned[m_vertexCount];
 		// Initialize the index into the height map array.
 		index = 0;
-
+		calculateNormals();
 		// Load the 3D terrain model with the height map terrain data.
 		// We will be creating 2 triangles for each of the four points in a quad.
 		for (j = 0; j<(m_terrainHeight - 1); j++)
@@ -456,16 +457,146 @@ int Mesh::GetIndexCount()
 	return m_indexCount;
 }
 
+void Mesh::calculateNormals()
+{
+	int i, j, index1, index2, index3, index;
+	float vertex1[3], vertex2[3], vertex3[3], vector1[3], vector2[3], sum[3], length;
+	VectorType* normals;
+
+
+	// Create a temporary array to hold the face normal vectors.
+	normals = new VectorType[(m_terrainHeight - 1) * (m_terrainWidth - 1)];
+	
+
+	// Go through all the faces in the mesh and calculate their normals.
+	for (j = 0; j<(m_terrainHeight - 1); j++)
+	{
+		for (i = 0; i<(m_terrainWidth - 1); i++)
+		{
+			index1 = ((j + 1) * m_terrainWidth) + i;      // Bottom left vertex.
+			index2 = ((j + 1) * m_terrainWidth) + (i + 1);  // Bottom right vertex.
+			index3 = (j * m_terrainWidth) + i;          // Upper left vertex.
+
+														// Get three vertices from the face.
+			vertex1[0] = m_heightMap[index1].x;
+			vertex1[1] = m_heightMap[index1].y;
+			vertex1[2] = m_heightMap[index1].z;
+
+			vertex2[0] = m_heightMap[index2].x;
+			vertex2[1] = m_heightMap[index2].y;
+			vertex2[2] = m_heightMap[index2].z;
+
+			vertex3[0] = m_heightMap[index3].x;
+			vertex3[1] = m_heightMap[index3].y;
+			vertex3[2] = m_heightMap[index3].z;
+
+			// Calculate the two vectors for this face.
+			vector1[0] = vertex1[0] - vertex3[0];
+			vector1[1] = vertex1[1] - vertex3[1];
+			vector1[2] = vertex1[2] - vertex3[2];
+			vector2[0] = vertex3[0] - vertex2[0];
+			vector2[1] = vertex3[1] - vertex2[1];
+			vector2[2] = vertex3[2] - vertex2[2];
+
+			index = (j * (m_terrainWidth - 1)) + i;
+
+			// Calculate the cross product of those two vectors to get the un-normalized value for this face normal.
+			normals[index].x = (vector1[1] * vector2[2]) - (vector1[2] * vector2[1]);
+			normals[index].y = (vector1[2] * vector2[0]) - (vector1[0] * vector2[2]);
+			normals[index].z = (vector1[0] * vector2[1]) - (vector1[1] * vector2[0]);
+
+			// Calculate the length.
+			length = (float)sqrt((normals[index].x * normals[index].x) + (normals[index].y * normals[index].y) +
+				(normals[index].z * normals[index].z));
+
+			// Normalize the final value for this face using the length.
+			normals[index].x = (normals[index].x / length);
+			normals[index].y = (normals[index].y / length);
+			normals[index].z = (normals[index].z / length);
+		}
+	}
+
+	// Now go through all the vertices and take a sum of the face normals that touch this vertex.
+	for (j = 0; j<m_terrainHeight; j++)
+	{
+		for (i = 0; i<m_terrainWidth; i++)
+		{
+			// Initialize the sum.
+			sum[0] = 0.0f;
+			sum[1] = 0.0f;
+			sum[2] = 0.0f;
+
+			// Bottom left face.
+			if (((i - 1) >= 0) && ((j - 1) >= 0))
+			{
+				index = ((j - 1) * (m_terrainWidth - 1)) + (i - 1);
+
+				sum[0] += normals[index].x;
+				sum[1] += normals[index].y;
+				sum[2] += normals[index].z;
+			}
+
+			// Bottom right face.
+			if ((i<(m_terrainWidth - 1)) && ((j - 1) >= 0))
+			{
+				index = ((j - 1) * (m_terrainWidth - 1)) + i;
+
+				sum[0] += normals[index].x;
+				sum[1] += normals[index].y;
+				sum[2] += normals[index].z;
+			}
+
+			// Upper left face.
+			if (((i - 1) >= 0) && (j<(m_terrainHeight - 1)))
+			{
+				index = (j * (m_terrainWidth - 1)) + (i - 1);
+
+				sum[0] += normals[index].x;
+				sum[1] += normals[index].y;
+				sum[2] += normals[index].z;
+			}
+
+			// Upper right face.
+			if ((i < (m_terrainWidth - 1)) && (j < (m_terrainHeight - 1)))
+			{
+				index = (j * (m_terrainWidth - 1)) + i;
+
+				sum[0] += normals[index].x;
+				sum[1] += normals[index].y;
+				sum[2] += normals[index].z;
+			}
+
+			// Calculate the length of this normal.
+			length = (float)sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2]));
+
+			// Get an index to the vertex location in the height map array.
+			index = (j * m_terrainWidth) + i;
+
+			// Normalize the final shared normal for this vertex and store it in the height map array.
+			m_heightMap[index].nx = (sum[0] / length);
+			m_heightMap[index].ny = (sum[1] / length);
+			m_heightMap[index].nz = (sum[2] / length);
+		}
+	}
+
+	// Release the temporary normals.
+	delete[] normals;
+	normals = 0;
+
+	
+}
+
+
 void Mesh::CalculateTangents(Vertex* verts, int numVerts, unsigned int* indices, int numIndices)
 {
 	// Reset tangents
-	for (int i = 0; i < numVerts; i++)
+	for(int i = 0; i < numVerts; i++)
 	{
 		verts[i].Tangent = XMFLOAT3(0, 0, 0);
 	}
 
 	// Calculate tangents one whole triangle at a time
-	for (int i = 0; i < numVerts;)
+	for(int i = 0; i < numVerts;)
 	{
 		// Grab indices and vertices of first triangle
 		unsigned int i1 = indices[i++];
@@ -513,7 +644,7 @@ void Mesh::CalculateTangents(Vertex* verts, int numVerts, unsigned int* indices,
 	}
 
 	// Ensure all of the tangents are orthogonal to the normals
-	for (int i = 0; i < numVerts; i++)
+	for(int i = 0; i < numVerts; i++)
 	{
 		// Grab the two vectors
 		XMVECTOR normal = XMLoadFloat3(&verts[i].Normal);

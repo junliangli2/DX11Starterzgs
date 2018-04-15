@@ -1,5 +1,8 @@
-﻿  Game.cpp
+﻿  Entity.cpp
 c:\users\tanay joshi\source\repos\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
-c:\users\tanay joshi\source\repos\dx11starterzgs\dx11starter\mesh.h(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
 c:\users\tanay joshi\source\repos\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\tanay joshi\source\repos\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\tanay joshi\source\repos\dx11starterzgs\dx11starter\entity.cpp(48): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\tanay joshi\source\repos\dx11starterzgs\dx11starter\entity.cpp(53): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\tanay joshi\source\repos\dx11starterzgs\dx11starter\entity.cpp(55): warning C4305: 'argument': truncation from 'double' to 'float'
   DX11Starter.vcxproj -> C:\Users\Tanay Joshi\Source\Repos\DX11Starterzgs\x64\Debug\DX11Starter.exe

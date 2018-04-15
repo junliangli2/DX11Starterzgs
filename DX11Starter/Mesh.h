@@ -20,6 +20,7 @@ public:
 	ID3D11Buffer* GetVertexBuffer();
 	ID3D11Buffer* GetIndexBuffer();
 	int GetIndexCount();
+	void calculateNormals();
 private:
 	// Buffers to hold actual geometry data
 	char* name;
