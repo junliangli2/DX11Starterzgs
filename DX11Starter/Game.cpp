@@ -60,9 +60,11 @@ Game::~Game()
 	delete entity1;
 	delete entity2;
 	delete entity3;
+	delete entity4;
 	delete m_mesh0;
 	delete m_mesh1;
 	delete m_mesh2;
+	delete m_mesh3;
 	delete camera;
 	pShadowMap->Release();
 	pShadowMapDepthView->Release();
@@ -174,6 +176,7 @@ void Game::LoadShaders()
 	material1 = new Material(vertexShader, pixelShader,device,context,L"rock.jpg", L"rockNormals.jpg");
 	material2 = new Material(vertexShader, pixelShader, device, context, L"T2.bmp", L"rockNormals.jpg");
 	material3 = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
+	material4 = new Material(vertexShader, pixelShader, device, context, L"houseA.jpg", L"houseANM.jpg");
 
 }
 
@@ -237,12 +240,16 @@ void Game::CreateBasicGeometry()
 	m_mesh1 = new Mesh("cone.obj", device);
 	m_mesh2 = new Mesh("gaiguode.obj", device);
 	m_mesh0 = new Mesh("terrain-heightmap.bmp", device);
+	m_mesh3 = new Mesh("houseA_obj.obj", device);
+	
+	
 	entity0 = new Entity(m_mesh0, material0);
 	
 	entity1 = new Entity(m_mesh1,material1);
 	entity2 = new Entity(m_mesh2,material2);
 	entity3 = new Entity(m_mesh1,material3);
 	entity3->SetPosition(-3,-3,0);
+	entity4 = new Entity(m_mesh3, material4);
 }
 
 void Game::CreateCamera()
@@ -368,6 +375,9 @@ void Game::Update(float deltaTime, float totalTime)
 		Quit();
 	entity0->SetPosition(-100.0f, -10.0f, -20.0f);
 	entity1->SetPosition(0, 0 , 0 );
+	entity4->SetScale(0.05f, 0.05f, 0.05f);
+	entity4->SetPosition(20.0f,0.0f, 5.0f);
+
 	
 	  
  
@@ -435,6 +445,10 @@ void Game::Draw(float deltaTime, float totalTime)
 	shadowVS->SetMatrix4x4("world", entity3->GetWorldMatrix());
 	shadowVS->CopyAllBufferData();
 	context->DrawIndexed(entity3->GetMesh()->GetIndexCount(), 0, 0);
+	entity4->DrawShadow(context);
+	shadowVS->SetMatrix4x4("world", entity4->GetWorldMatrix());
+	shadowVS->CopyAllBufferData();
+	context->DrawIndexed(entity4->GetMesh()->GetIndexCount(), 0, 0);
 	context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
 	viewport.Width = (float)width;
 	viewport.Height = (float)height;
@@ -550,13 +564,6 @@ void Game::Draw(float deltaTime, float totalTime)
 		0);    // Offset to add to each index when looking up vertices
 
 	//draw the thrid one
-
-
-	
-
-
-
-
 	entity3->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
 
@@ -574,7 +581,22 @@ void Game::Draw(float deltaTime, float totalTime)
 		0);    // Offset to add to each index when looking up vertices
 
 
+	//////////////////////////
+	entity4->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
+
+	ID3D11Buffer* vertexBuffer4 = entity4->GetMesh()->GetVertexBuffer();
+	ID3D11Buffer* indexBuffer4 = entity4->GetMesh()->GetIndexBuffer();
+
+
+	context->IASetVertexBuffers(0, 1, &vertexBuffer4, &stride, &offset);
+	context->IASetIndexBuffer(indexBuffer4, DXGI_FORMAT_R32_UINT, 0);
+
+	// Finally do the actual drawing
+	context->DrawIndexed(
+		entity4->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+		0,     // Offset to the first index we want to use
+		0);    // Offset to add to each index when looking up vertices
 
 
 	if (GetAsyncKeyState(VK_LBUTTON)) {

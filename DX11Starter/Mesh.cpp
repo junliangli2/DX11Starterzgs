@@ -19,7 +19,7 @@ Mesh::Mesh(Vertex* vertexArray, int vertexCount, UINT* indexArray, int indexCoun
 Mesh::Mesh(char * fileName, ID3D11Device * device)
 {
 	name = strchr(fileName, '.');
-	if (strcmp(name, ".obj") == 0)
+	if (strcmp(name, ".obj") == 0 || strcmp(name, ".OBJ") == 0)
 	{
 		std::ifstream obj(fileName);
 

@@ -46,7 +46,7 @@ Entity::Entity(Mesh * meshObj, Material * materialObj, XMFLOAT3 direction)
 void Entity::InitLights()     
 {
 	directionLight1.AmbientColor = XMFLOAT4(0.1, 0.1, 0.8, 1.0);
-	directionLight1.DiffuseColor = XMFLOAT4(.4F, .5f, .4f, 1.0);
+	directionLight1.DiffuseColor = XMFLOAT4(.8f, .8f, .1f, 1.0);
 	directionLight1.Direction = XMFLOAT3(0, 11, -4);
 
 
