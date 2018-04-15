@@ -58,6 +58,7 @@ private:
 	Mesh *m_mesh2;
 	Mesh *m_mesh0;
 	Mesh *m_mesh3;
+	Mesh *m_mesh4;
 
 	//Entities
 	Entity* entity0;
@@ -65,6 +66,7 @@ private:
 	Entity* entity2;
 	Entity* entity3;
 	Entity* entity4;
+	Entity* entity5;
 
 	//Materials
 	Material* material0;
@@ -72,6 +74,7 @@ private:
 	Material* material2;
 	Material* material3;
 	Material* material4;
+	Material* material5;
 
 	ID3D11Texture2D* pShadowMap;
 	ID3D11DepthStencilView*	pShadowMapDepthView;
