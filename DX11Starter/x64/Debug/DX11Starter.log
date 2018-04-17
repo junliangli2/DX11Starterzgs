@@ -1,36 +1,5 @@
-﻿  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\ParticlePixelShader.cso
-  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\ParticleVertexShader.cso
-  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\PixelShader.cso
-  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\VertexShader.cso
-  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\VertexShader1.cso
-  Camera.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-  DXCore.cpp
-  Emitter.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-  Entity.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\entity.cpp(48): warning C4305: “参数”: 从“double”到“float”截断
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\entity.cpp(53): warning C4305: “参数”: 从“double”到“float”截断
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\entity.cpp(55): warning C4305: “参数”: 从“double”到“float”截断
-  Game.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-  Main.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-  Material.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-  Mesh.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-  SimpleShader.cpp
-c:\users\jl466\desktop\dx11starterzgs_329\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: 单行注释包含行继续符
-  正在生成代码...
-  LINK : 没有找到 C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\DX11Starter.exe 或上一个增量链接没有生成它；正在执行完全链接
-  DX11Starter.vcxproj -> C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Debug\DX11Starter.exe
+﻿  Game.cpp
+c:\users\kaust\desktop\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+c:\users\kaust\desktop\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\kaust\desktop\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  DX11Starter.vcxproj -> C:\Users\kaust\Desktop\DX11Starterzgs\x64\Debug\DX11Starter.exe

@@ -334,6 +334,22 @@ void Game::CreateParticles()
 		particlePShader,
 		particleSRV,
 		device);
+
+	explosionEmitter = new Emitter(
+		1000,
+		100,
+		0.5f,
+		5,
+		10,
+		XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f),	// Start color
+		XMFLOAT4(1, 1, 1, 0.0f),		// End color
+		XMFLOAT3(0.0f, 1.2f, 0.0f),				// Start velocity
+		XMFLOAT3(3.0f, 0.3f, -2),				// Start position
+		XMFLOAT3(),				// Start acceleration
+		particleVShader,
+		particlePShader,
+		particleSRV,
+		device);
 }
 
 // --------------------------------------------------------
@@ -388,6 +404,7 @@ void Game::Update(float deltaTime, float totalTime)
 	  
  
 	campfireEmitter->Update(deltaTime);
+	explosionEmitter->Update(deltaTime);
  
 	//update the camera
 	camera->Update();
@@ -513,6 +530,7 @@ void Game::Draw(float deltaTime, float totalTime)
  
 		particlePShader->SetSamplerState("trilinear", particleSample);
 		campfireEmitter->Render(context, viewMatrix, projectionMatrix);
+		explosionEmitter->Render(context, viewMatrix, projectionMatrix);
 
 		sample->Release();
 		particleSample->Release();

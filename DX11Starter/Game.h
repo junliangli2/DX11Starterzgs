@@ -84,6 +84,7 @@ private:
 	 
 	//particles
 	Emitter* campfireEmitter;
+	Emitter* explosionEmitter;
 	ID3D11BlendState* particleBlendState;
 	ID3D11DepthStencilState* particleDepthState;
 	
