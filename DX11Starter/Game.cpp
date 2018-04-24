@@ -2,6 +2,9 @@
 #include "Vertex.h"
 #include <iostream>
 #include<vector>
+#include "WICTextureLoader.h"
+#include "DDSTextureLoader.h"
+
 using namespace std;
 
 // For the DirectX Math library
@@ -67,15 +70,22 @@ Game::~Game()
 	delete m_mesh2;
 	delete m_mesh3;
 	delete m_mesh4;
+	delete m_mesh5;
 	delete camera;
 	pShadowMap->Release();
 	pShadowMapDepthView->Release();
 	pShadowMapSRView->Release();
 	shadowSamplerState->Release();
 	shadowRastState->Release();
+	skySRV->Release();
+	skyDepthState->Release();
+	skyRastState->Release();
+	skySampler->Release();
 	delete shadowVS;
 	delete pixelShader;
 	delete vertexShader;
+	delete skyVS;
+	delete skyPS;
 	delete particlePShader;
 	delete particleVShader;
 	delete campfireEmitter;
@@ -86,14 +96,7 @@ Game::~Game()
 		for (int i = 0; i < etts.size(); i++) {
 			delete etts.at(i)->GetMesh();
 			delete etts.at(i);
-
-
-
-
 		}
-
-
-
 
 }
 	//device->Release();
@@ -119,6 +122,7 @@ void Game::Init()
 	Createshadowmap();
 	CreateMaterials();
 	CreateParticles();
+	CreateSkybox();
 	
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
@@ -146,7 +150,11 @@ void Game::Init()
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // Turns off depth writing
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	device->CreateDepthStencilState(&dsDesc, &particleDepthState);
+
+	
 }
+
+
 
 
 // --------------------------------------------------------
@@ -172,6 +180,15 @@ void Game::LoadShaders()
 
 	particlePShader = new SimplePixelShader(device, context);
 	particlePShader->LoadShaderFile(L"ParticlePixelShader.cso");
+
+
+	//Load sky shaders
+
+	skyVS = new SimpleVertexShader(device, context);
+	skyVS->LoadShaderFile(L"SkyVS.cso");
+
+	skyPS = new SimplePixelShader(device, context);
+	skyPS->LoadShaderFile(L"SkyPS.cso");
 
 	//Create Texttures
 	material0 = new Material(vertexShader, pixelShader, device, context, L"GrassTest.jpg", L"terrainnormal.jpg");
@@ -245,6 +262,7 @@ void Game::CreateBasicGeometry()
 	m_mesh0 = new Mesh("terrain-heightmap.bmp", device);
 	m_mesh3 = new Mesh("houseA_obj.obj", device);
 	m_mesh4 = new Mesh("house.obj", device);
+	m_mesh5 = new Mesh("cube.obj", device);
 	
 	entity0 = new Entity(m_mesh0, material0);
 	
@@ -334,24 +352,36 @@ void Game::CreateParticles()
 		particlePShader,
 		particleSRV,
 		device);
-
-	explosionEmitter = new Emitter(
-		1000,
-		100,
-		0.5f,
-		5,
-		10,
-		XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f),	// Start color
-		XMFLOAT4(1, 1, 1, 0.0f),		// End color
-		XMFLOAT3(0.0f, 1.2f, 0.0f),				// Start velocity
-		XMFLOAT3(3.0f, 0.3f, -2),				// Start position
-		XMFLOAT3(),				// Start acceleration
-		particleVShader,
-		particlePShader,
-		particleSRV,
-		device);
 }
 
+void Game::CreateSkybox()
+{
+	CreateDDSTextureFromFile(device, L"SunnyCubeMap.dds", 0, &skySRV);
+
+	
+	D3D11_SAMPLER_DESC samplerDesc = {}; 
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX; 
+
+											
+	device->CreateSamplerState(&samplerDesc, &skySampler);
+
+	// Create states for sky rendering
+	D3D11_RASTERIZER_DESC rs = {};
+	rs.CullMode = D3D11_CULL_FRONT;
+	rs.FillMode = D3D11_FILL_SOLID;
+	device->CreateRasterizerState(&rs, &skyRastState);
+
+	D3D11_DEPTH_STENCIL_DESC ds = {};
+	ds.DepthEnable = true;
+	ds.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	ds.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	device->CreateDepthStencilState(&ds, &skyDepthState);
+}
 // --------------------------------------------------------
 // Handle resizing DirectX "stuff" to match the new window size.
 // For instance, updating our projection matrix's aspect ratio.
@@ -404,7 +434,6 @@ void Game::Update(float deltaTime, float totalTime)
 	  
  
 	campfireEmitter->Update(deltaTime);
-	explosionEmitter->Update(deltaTime);
  
 	//update the camera
 	camera->Update();
@@ -530,7 +559,6 @@ void Game::Draw(float deltaTime, float totalTime)
  
 		particlePShader->SetSamplerState("trilinear", particleSample);
 		campfireEmitter->Render(context, viewMatrix, projectionMatrix);
-		explosionEmitter->Render(context, viewMatrix, projectionMatrix);
 
 		sample->Release();
 		particleSample->Release();
@@ -638,17 +666,37 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Finally do the actual drawing
 	context->DrawIndexed(
-		entity5->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-		0,     // Offset to the first index we want to use
-		0);    // Offset to add to each index when looking up vertices
+		entity5->GetMesh()->GetIndexCount(),     
+		0,     
+		0);    
+	////////
+	
+		// After I draw any and all opaque entities, I want to draw the sky
+		ID3D11Buffer* skyVB = m_mesh5->GetVertexBuffer();
+		ID3D11Buffer* skyIB = m_mesh5->GetIndexBuffer();
 
+		// Set buffers in the input assembler
+		context->IASetVertexBuffers(0, 1, &skyVB, &stride, &offset);
+		context->IASetIndexBuffer(skyIB, DXGI_FORMAT_R32_UINT, 0);
+
+		// Set up the sky shaders
+		skyVS->SetMatrix4x4("view", camera->GetViewMatrix());
+		skyVS->SetMatrix4x4("projection", camera->GetProjectionMatrix());
+		skyVS->CopyAllBufferData();
+		skyVS->SetShader();
+
+		skyPS->SetShaderResourceView("SkyTexture", skySRV);
+		skyPS->SetSamplerState("BasicSampler", skySampler);
+		skyPS->SetShader();
+
+		// Set up the render states necessary for the sky
+		context->RSSetState(skyRastState);
+		context->OMSetDepthStencilState(skyDepthState, 0);
+		context->DrawIndexed(m_mesh5->GetIndexCount(), 0, 0);
+
+	
 	if (GetAsyncKeyState(VK_LBUTTON)) {
-		
-		
-		
-		
-		
-		
+	
 		if (etts.size() == 0) {
 			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
 			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");

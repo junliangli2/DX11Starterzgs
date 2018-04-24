@@ -9,7 +9,8 @@
 #include "Material.h"
 #include "Light.h"
 #include "Emitter.h"
- 
+
+
 class Game 
 	: public DXCore
 {
@@ -41,6 +42,7 @@ private:
 	void CreateParticles();
 	void UpdateCameraAxis(int x,int y);
 	void CreateMaterials();
+	void CreateSkybox();
 
 	//Managers
 	 
@@ -50,6 +52,15 @@ private:
 	SimpleVertexShader* vertexShader;
 	SimpleVertexShader* particleVShader;
 	SimplePixelShader* particlePShader;
+	SimpleVertexShader* skyVS;
+	SimplePixelShader* skyPS;
+
+
+	ID3D11ShaderResourceView* skySRV;
+
+	ID3D11RasterizerState* skyRastState;
+	ID3D11DepthStencilState* skyDepthState;
+	ID3D11SamplerState* skySampler;
 
 	Camera* camera;
 	
@@ -59,6 +70,7 @@ private:
 	Mesh *m_mesh0;
 	Mesh *m_mesh3;
 	Mesh *m_mesh4;
+	Mesh *m_mesh5;
 
 	//Entities
 	Entity* entity0;
@@ -84,7 +96,6 @@ private:
 	 
 	//particles
 	Emitter* campfireEmitter;
-	Emitter* explosionEmitter;
 	ID3D11BlendState* particleBlendState;
 	ID3D11DepthStencilState* particleDepthState;
 	
