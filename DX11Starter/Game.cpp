@@ -122,7 +122,7 @@ void Game::Init()
 	Createshadowmap();
 	CreateMaterials();
 	CreateParticles();
-	CreateSkybox();
+	
 	
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
@@ -151,7 +151,7 @@ void Game::Init()
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	device->CreateDepthStencilState(&dsDesc, &particleDepthState);
 
-	
+	CreateSkybox();
 }
 
 
@@ -553,17 +553,8 @@ void Game::Draw(float deltaTime, float totalTime)
 	sampleDesc.MaxLOD = D3D11_FLOAT32_MAX; //Mipmaps (if applicable)
 	 
 	sampleResult = device->CreateSamplerState(&sampleDesc, &particleSample);
-		float blendArray[4] = { 1,1,1,1 };
-		context->OMSetBlendState(particleBlendState, blendArray, 0xffffffff); 
-		context->OMSetDepthStencilState(particleDepthState, 0);			 
- 
-		particlePShader->SetSamplerState("trilinear", particleSample);
-		campfireEmitter->Render(context, viewMatrix, projectionMatrix);
-
-		sample->Release();
-		particleSample->Release();
-		context->OMSetBlendState(0, blendArray, 0xffffffff);
-		context->OMSetDepthStencilState(0, 0);
+	
+		
 		
 	
 
@@ -670,7 +661,17 @@ void Game::Draw(float deltaTime, float totalTime)
 		0,     
 		0);    
 	////////
-	
+	float blendArray[4] = { 1,1,1,1 };
+	context->OMSetBlendState(particleBlendState, blendArray, 0xffffffff);
+	context->OMSetDepthStencilState(particleDepthState, 0);
+
+	particlePShader->SetSamplerState("trilinear", particleSample);
+	campfireEmitter->Render(context, viewMatrix, projectionMatrix);
+	float blend[4] = {};
+	sample->Release();
+	particleSample->Release();
+	context->OMSetBlendState(0, blend, 0xffffffff);
+	context->OMSetDepthStencilState(0, 0);
 		// After I draw any and all opaque entities, I want to draw the sky
 		ID3D11Buffer* skyVB = m_mesh5->GetVertexBuffer();
 		ID3D11Buffer* skyIB = m_mesh5->GetIndexBuffer();
@@ -693,6 +694,9 @@ void Game::Draw(float deltaTime, float totalTime)
 		context->RSSetState(skyRastState);
 		context->OMSetDepthStencilState(skyDepthState, 0);
 		context->DrawIndexed(m_mesh5->GetIndexCount(), 0, 0);
+	
+
+		
 
 	
 	if (GetAsyncKeyState(VK_LBUTTON)) {

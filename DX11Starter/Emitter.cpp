@@ -45,7 +45,7 @@ Emitter::Emitter(
 	firstDeadParticle = 0;
 
 	//make the particle array
-	particles = new Particle[maxParticles];
+	particles = new Particle[maxParticles];	
 
 	//Create particle Vertices, intitialize UVs here, and they will never change
 	particleVertices = new ParticleVertex[maxParticles * 4]; //There are 4 vertices that make up a particle
