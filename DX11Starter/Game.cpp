@@ -92,6 +92,7 @@ Game::~Game()
 	particleBlendState->Release();
 	particleDepthState->Release();
 	particleSRV->Release();
+	particleSample->Release();
 	if (etts.size() > 0) {
 		for (int i = 0; i < etts.size(); i++) {
 			delete etts.at(i)->GetMesh();
@@ -121,37 +122,20 @@ void Game::Init()
 	CreateBasicGeometry();
 	Createshadowmap();
 	CreateMaterials();
-	CreateParticles();
 	
 	
+
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
 	// Essentially: "What kind of shape should the GPU draw with our data?"
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
 
-	// Blend for particles (additive)
-	D3D11_BLEND_DESC blend = {};
-	blend.AlphaToCoverageEnable = false;
-	blend.IndependentBlendEnable = false;
-	blend.RenderTarget[0].BlendEnable = true;
-	blend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	blend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	blend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	device->CreateBlendState(&blend, &particleBlendState);
-
-
-	// A depth state for the particles
-	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
-	dsDesc.DepthEnable = true;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // Turns off depth writing
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	device->CreateDepthStencilState(&dsDesc, &particleDepthState);
+	
 
 	CreateSkybox();
+	CreateParticles();
+
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 
@@ -331,7 +315,7 @@ void Game::Createshadowmap()
 	rast.SlopeScaledDepthBias = 1.0f;
 	device->CreateRasterizerState(&rast, &shadowRastState);
 
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
 
 }
 
@@ -359,16 +343,16 @@ void Game::CreateSkybox()
 	CreateDDSTextureFromFile(device, L"SunnyCubeMap.dds", 0, &skySRV);
 
 	
-	D3D11_SAMPLER_DESC samplerDesc = {}; 
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX; 
+	D3D11_SAMPLER_DESC skysamplerDesc = {}; 
+	skysamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	skysamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	skysamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	skysamplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	skysamplerDesc.MaxAnisotropy = 16;
+	skysamplerDesc.MaxLOD = D3D11_FLOAT32_MAX; 
 
 											
-	device->CreateSamplerState(&samplerDesc, &skySampler);
+	device->CreateSamplerState(&skysamplerDesc, &skySampler);
 
 	// Create states for sky rendering
 	D3D11_RASTERIZER_DESC rs = {};
@@ -528,31 +512,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		1.0f,
 		0);
 	
-	ID3D11SamplerState* sample;
-	D3D11_SAMPLER_DESC sampleDesc = {}; //Holds options for sampling
-
-										//Describes how to handle addresses outside 0-1 UV range
-	sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-	sampleDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	//Describes how to handle sampling between pixels
-	sampleDesc.MaxLOD = D3D11_FLOAT32_MAX; //Mipmaps (if applicable)
-
-	HRESULT sampleResult = device->CreateSamplerState(&sampleDesc, &sample);
-	ID3D11SamplerState* particleSample;
-	sampleDesc = {}; //Holds options for sampling
-
-					 //Describes how to handle addresses outside 0-1 UV range
-	sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-	sampleDesc.Filter = D3D11_FILTER_ANISOTROPIC;	//Describes how to handle sampling between pixels
-	sampleDesc.MaxAnisotropy = 16;
-	sampleDesc.MaxLOD = D3D11_FLOAT32_MAX; //Mipmaps (if applicable)
-	 
-	sampleResult = device->CreateSamplerState(&sampleDesc, &particleSample);
+	
 	
 		
 		
@@ -661,17 +621,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		0,     
 		0);    
 	////////
-	float blendArray[4] = { 1,1,1,1 };
-	context->OMSetBlendState(particleBlendState, blendArray, 0xffffffff);
-	context->OMSetDepthStencilState(particleDepthState, 0);
-
-	particlePShader->SetSamplerState("trilinear", particleSample);
-	campfireEmitter->Render(context, viewMatrix, projectionMatrix);
-	float blend[4] = {};
-	sample->Release();
-	particleSample->Release();
-	context->OMSetBlendState(0, blend, 0xffffffff);
-	context->OMSetDepthStencilState(0, 0);
+	
 		// After I draw any and all opaque entities, I want to draw the sky
 		ID3D11Buffer* skyVB = m_mesh5->GetVertexBuffer();
 		ID3D11Buffer* skyIB = m_mesh5->GetIndexBuffer();
@@ -694,8 +644,26 @@ void Game::Draw(float deltaTime, float totalTime)
 		context->RSSetState(skyRastState);
 		context->OMSetDepthStencilState(skyDepthState, 0);
 		context->DrawIndexed(m_mesh5->GetIndexCount(), 0, 0);
-	
 
+
+
+		context->RSSetState(0);
+		context->OMSetDepthStencilState(0, 0);
+
+
+		float blendArray[4] = { 1,1,1,1 };
+		
+		context->OMSetBlendState(particleBlendState, blendArray, 0xffffffff);
+		context->OMSetDepthStencilState(particleDepthState, 0);
+
+		particlePShader->SetSamplerState("trilinear", particleSample);
+		campfireEmitter->Render(context, viewMatrix, projectionMatrix);
+		
+		
+		
+		context->OMSetBlendState(0, blendArray, 0xffffffff);
+		context->OMSetDepthStencilState(0, 0);
+		
 		
 
 	
@@ -807,20 +775,44 @@ void Game::UpdateCameraAxis(int x,int y)
 
 void Game::CreateMaterials()
 {
-	//Asset Manager Loading
-	//Create Sampler State
-	
-	 
-
-	//Create the sampler object
-	
- 
-	//Create Texture
-
-
 	//import particle texture
  
 	CreateWICTextureFromFile(device, context,L"fireParticle.jpg", 0, &particleSRV);
+
+	// Create a sampler state for texture sampling
+	D3D11_SAMPLER_DESC psamplerDesc = {};
+	psamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	psamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	psamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	psamplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	psamplerDesc.MaxAnisotropy = 16;
+	psamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Ask the device to create a state
+	device->CreateSamplerState(&psamplerDesc, &particleSample);
+
+	// Blend for particles (additive)
+	D3D11_BLEND_DESC blend = {};
+	blend.AlphaToCoverageEnable = false;
+	blend.IndependentBlendEnable = false;
+	blend.RenderTarget[0].BlendEnable = true;
+	blend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	blend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	device->CreateBlendState(&blend, &particleBlendState);
+
+
+	// A depth state for the particles
+	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	dsDesc.DepthEnable = true;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // Turns off depth writing
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	device->CreateDepthStencilState(&dsDesc, &particleDepthState);
+
 }
 
 
