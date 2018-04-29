@@ -22,7 +22,7 @@ Entity::Entity(Mesh* meshObj, Material* materialObj)
 	position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	
+
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
 	InitLights();
 }
@@ -43,7 +43,7 @@ Entity::Entity(Mesh * meshObj, Material * materialObj, XMFLOAT3 direction)
 	InitLights();
 }
 
-void Entity::InitLights()     
+void Entity::InitLights()
 {
 	directionLight1.AmbientColor = XMFLOAT4(0.2, 0.2, 0.8, 1.0);
 	directionLight1.DiffuseColor = XMFLOAT4(1, 1, .01f, 1.0);
@@ -58,12 +58,12 @@ void Entity::InitLights()
 
 void Entity::move(int scale)
 {
-	position.x += dir.x/ scale;
- 
-	position.y += dir.y/ scale;
-	 
-	position.z += dir.z/ scale;
-	 
+	position.x += dir.x / scale;
+
+	position.y += dir.y / scale;
+
+	position.z += dir.z / scale;
+
 	UpdateWorldMatrix();
 }
 
@@ -87,12 +87,12 @@ void Entity::SetScale(float x, float y, float z)
 
 void Entity::UpdateWorldMatrix()
 {
-	XMMATRIX trans = XMMatrixTranslation(position.x,position.y,position.z);
+	XMMATRIX trans = XMMatrixTranslation(position.x, position.y, position.z);
 	XMMATRIX rotX = XMMatrixRotationX(rotation.x);
 	XMMATRIX rotY = XMMatrixRotationY(rotation.y);
 	XMMATRIX rotZ = XMMatrixRotationZ(rotation.z);
-	XMMATRIX sMatrix = XMMatrixScaling(scale.x,scale.y,scale.z);
-	
+	XMMATRIX sMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+
 	XMMATRIX world = sMatrix * rotZ*rotY*rotX*trans;
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(world));
 }
@@ -112,15 +112,15 @@ void Entity::PrepareMaterial(XMFLOAT4X4 view, XMFLOAT4X4 projection, XMFLOAT4X4 
 		"light2",  // The name of the (eventual) variable in the shader
 		&directionLight2,   // The address of the data to copy
 		sizeof(DirectionalLight)); // The size of the data to copy
- 
 
-	
+
+
 	material->GetPixelShader()->SetSamplerState("basicSampler", samplerState);
 	material->GetPixelShader()->SetShaderResourceView("diffuseTexture", shaderRV);
 	material->GetPixelShader()->SetShaderResourceView("NormalTexture", normalRV);
 	material->GetVertexShader()->CopyAllBufferData();
 	material->GetVertexShader()->SetShader();
-	 
+
 }
 
 XMFLOAT4X4 Entity::GetWorldMatrix()

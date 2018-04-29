@@ -16,8 +16,8 @@ class Entity
 public:
 	Entity();
 	Entity(Mesh* meshObj, Material* materialObj);
-	Entity(Mesh* meshObj, Material* materialObj,XMFLOAT3 direction);
- 
+	Entity(Mesh* meshObj, Material* materialObj, XMFLOAT3 direction);
+
 	~Entity();
 
 
@@ -29,7 +29,7 @@ public:
 	void DrawShadow(ID3D11DeviceContext *context);
 	void InitLights();
 	void move(int scale);
-	void SetPosition(float x,float y,float z);
+	void SetPosition(float x, float y, float z);
 	void SetRotation(float x, float y, float z);
 	void SetScale(float x, float y, float z);
 	void UpdateWorldMatrix();
@@ -41,7 +41,7 @@ private:
 	XMFLOAT3 rotation;
 	XMFLOAT3 scale;
 	XMFLOAT3 dir;
-	
+
 	//matrices
 	XMFLOAT4X4 worldMatrix;
 

@@ -1,5 +1,5 @@
 ﻿  Game.cpp
-d:\program files (x86)\source\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
-d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  DX11Starter.vcxproj -> D:\Program Files (x86)\Source\DX11Starterzgs\x64\Debug\DX11Starter.exe
+d:\users\user\documents\github\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  DX11Starter.vcxproj -> D:\Users\User\Documents\GitHub\DX11Starterzgs\x64\Debug\DX11Starter.exe

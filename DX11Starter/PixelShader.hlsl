@@ -32,7 +32,7 @@ cbuffer constantBuffer1 : register(b0)
 	DirectionalLight light2;
 };
 
-Texture2D diffuseTexture  : register(t0); 
+Texture2D diffuseTexture  : register(t0);
 Texture2D ShadowMap       : register(t1);
 Texture2D NormalTexture  : register(t2);
 SamplerState basicSampler : register(s0);

@@ -621,7 +621,60 @@ void Game::Draw(float deltaTime, float totalTime)
 		0,     
 		0);    
 	////////
-	
+	if (GetAsyncKeyState(VK_LBUTTON)) {
+
+		if (etts.size() == 0) {
+			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
+			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
+			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
+			entity123->SetScale(.01f, .01f, .01f);
+			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
+			etts.push_back(entity123);
+		}
+
+		else if (GetTickCount() - etts.back()->time > 500) {
+			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
+			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
+			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
+			entity123->SetScale(.01f, .01f, .01f);
+			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
+			etts.push_back(entity123);
+		}
+
+
+
+
+	}
+
+	if (etts.size() > 0) {
+		for (int i = 0; i < etts.size(); i++) {
+			if (GetAsyncKeyState(VK_SHIFT)) {
+				etts.at(i)->move(1000);
+			}
+			else { etts.at(i)->move(100); }
+
+			etts.at(i)->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
+			ID3D11Buffer* vertexBuffer30 = etts.at(i)->GetMesh()->GetVertexBuffer();
+			ID3D11Buffer* indexBuffer30 = etts.at(i)->GetMesh()->GetIndexBuffer();
+			context->IASetVertexBuffers(0, 1, &vertexBuffer30, &stride, &offset);
+			context->IASetIndexBuffer(indexBuffer30, DXGI_FORMAT_R32_UINT, 0);
+			context->DrawIndexed(
+				etts.at(i)->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+				0,     // Offset to the first index we want to use
+				0);    // O
+
+
+		}
+
+
+	}
+
+
+
+
+	pixelShader->SetShaderResourceView("ShadowMap", 0);
+	context->RSSetState(0);
+	context->OMSetDepthStencilState(0, 0);
 		// After I draw any and all opaque entities, I want to draw the sky
 		ID3D11Buffer* skyVB = m_mesh5->GetVertexBuffer();
 		ID3D11Buffer* skyIB = m_mesh5->GetIndexBuffer();
@@ -667,60 +720,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		
 
 	
-	if (GetAsyncKeyState(VK_LBUTTON)) {
 	
-		if (etts.size() == 0) {
-			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
-			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
-			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
-			entity123->SetScale(.01f, .01f, .01f);
-			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
-			etts.push_back(entity123);
-		}
-
-		else if(GetTickCount() - etts.back()->time > 500) {
-			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
-			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
-			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
-			entity123->SetScale(.01f, .01f, .01f);
-			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
-			etts.push_back(entity123);
-			}
-	
-
-
-
-	}
-
-	if (etts.size() > 0) {
-		for (int i = 0; i < etts.size(); i++) {
-			if (GetAsyncKeyState(VK_SHIFT)) {
-				etts.at(i)->move(1000);
-			}
-			else { etts.at(i)->move(100); }
-			
-			etts.at(i)->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
-			ID3D11Buffer* vertexBuffer30 = etts.at(i)->GetMesh()->GetVertexBuffer();
-			ID3D11Buffer* indexBuffer30 = etts.at(i)->GetMesh()->GetIndexBuffer();
-			context->IASetVertexBuffers(0, 1, &vertexBuffer30, &stride, &offset);
-			context->IASetIndexBuffer(indexBuffer30, DXGI_FORMAT_R32_UINT, 0);
-			context->DrawIndexed(
-				etts.at(i)->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-				0,     // Offset to the first index we want to use
-				0);    // O
-
-
-		}
-
-
-	}
-
-
-
-
-	pixelShader->SetShaderResourceView("ShadowMap", 0);
-	context->RSSetState(0);
-	context->OMSetDepthStencilState(0, 0);
 
 
 
