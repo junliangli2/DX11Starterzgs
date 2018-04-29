@@ -4,7 +4,7 @@
 #include<vector>
 #include "WICTextureLoader.h"
 #include "DDSTextureLoader.h"
-
+#include"SimpleMath.h"
 using namespace std;
 
 // For the DirectX Math library
@@ -18,8 +18,9 @@ using namespace DirectX;
 //
 
 vector<Entity*> etts;
- 
-float qwe1=0;
+float ammos = 5;
+float time;
+bool reload = false;
 // hInstance - the application's OS-level handle (unique ID)
 // --------------------------------------------------------
 Game::Game(HINSTANCE hInstance)
@@ -58,7 +59,7 @@ Game::~Game()
 
 	// Delete our simple shader objects, which
 	// will clean up their own internal DirectX stuff
-	
+	ammoTexture->Release();
 	delete entity0;
 	delete entity1;
 	delete entity2;
@@ -135,6 +136,9 @@ void Game::Init()
 	CreateSkybox();
 	CreateParticles();
 
+	CreateWICTextureFromFile(device, context, L"ams.png", 0, &ammoTexture);
+	ammo.reset(new DirectX::SpriteBatch(context));
+	font.reset(new DirectX::SpriteFont(device,L"Arial.spritefont"));
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
@@ -397,6 +401,7 @@ void Game::Update(float deltaTime, float totalTime)
 
 
 
+
 	XMMATRIX shProj = XMMatrixOrthographicLH(60, 60, 0.1f, 300.0f);
 	XMMATRIX shView = XMMatrixLookAtLH(
 		XMVectorSet(0, 20,-20, 0),
@@ -410,9 +415,11 @@ void Game::Update(float deltaTime, float totalTime)
 	entity0->SetPosition(-100.0f, -10.0f, -20.0f);
 	entity1->SetPosition(0, 0 , 0 );
 	entity4->SetScale(0.05f, 0.05f, 0.05f);
-	entity4->SetPosition(20.0f,0.0f, 5.0f);
+	entity4->SetPosition(-5,-8.3f, 25.0f);
+	entity4->SetRotation(.1f, 63, -.06f);
 	entity5->SetScale(0.05f, 0.05f, 0.05f);
-	entity5->SetPosition(15.0f, 0.0f, 1.0f);
+	entity5->SetPosition(2, -8.3f, 22);
+	entity5->SetRotation(0, 90, 0);
 
 	
 	  
@@ -422,26 +429,11 @@ void Game::Update(float deltaTime, float totalTime)
 	//update the camera
 	camera->Update();
 	 
-	if (flaga == true) {
-		roty = roty + shame1;
-		flaga = false;
-	}
-	if (flagb == true) {
-		roty = roty + shame1;
-		flagb = false;
-	}
-	if (flagc == true) {
-		rotx = rotx + shame;
-		flagc = false;
-	}
-	if (flagd == true) {
-		rotx = rotx + shame;
-		flagd = false;
-	}
  
-	entity2->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
  
-	entity2->SetRotation( rotx,-90+roty, rotz);
+	entity2->SetPosition(camera->getpositionvec().x+.03f, camera->getpositionvec().y, camera->getpositionvec().z+.08f);
+ 
+	entity2->SetRotation( 0,-89.55, .1f);
 	 
 	XMMATRIX V = XMLoadFloat4x4(&camera->GetViewMatrix());
 	XMStoreFloat4x4(&viewMatrix, V); // Transpose for HLSL!
@@ -452,6 +444,7 @@ void Game::Update(float deltaTime, float totalTime)
 // --------------------------------------------------------
 void Game::Draw(float deltaTime, float totalTime)
 {
+
 	context->OMSetRenderTargets(0, 0, pShadowMapDepthView);
 	context->ClearDepthStencilView(pShadowMapDepthView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	context->RSSetState(shadowRastState);
@@ -463,12 +456,12 @@ void Game::Draw(float deltaTime, float totalTime)
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 	context->RSSetViewports(1, &viewport);
- 
+
 	shadowVS->SetShader();
 	shadowVS->SetMatrix4x4("view", shadowViewMatrix);
 	shadowVS->SetMatrix4x4("projection", shadowProjectionMatrix);
 	context->PSSetShader(0, 0, 0);
-	 
+
 	entity1->DrawShadow(context);
 	shadowVS->SetMatrix4x4("world", entity1->GetWorldMatrix());
 	shadowVS->CopyAllBufferData();
@@ -495,7 +488,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	context->RSSetViewports(1, &viewport);
 	context->RSSetState(0);
 	// Finally do the actual drawing
-	
+
 
 
 
@@ -511,15 +504,15 @@ void Game::Draw(float deltaTime, float totalTime)
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f,
 		0);
-	
-	
-	
-		
-		
-	
 
- 
-	
+
+
+
+
+
+
+
+
 	entity1->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 	pixelShader->SetShaderResourceView("ShadowMap", pShadowMapSRView);
 	pixelShader->SetSamplerState("ShadowSampler", shadowSamplerState);
@@ -530,40 +523,40 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT offset = 0;
 
 
-	ID3D11Buffer* vertexBuffer=entity1->GetMesh()->GetVertexBuffer();
-	ID3D11Buffer* indexBuffer= entity1->GetMesh()->GetIndexBuffer();
+	ID3D11Buffer* vertexBuffer = entity1->GetMesh()->GetVertexBuffer();
+	ID3D11Buffer* indexBuffer = entity1->GetMesh()->GetIndexBuffer();
 	context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 	context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	
+
 	// Finally do the actual drawing
 	context->DrawIndexed(
 		entity1->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
 		0,     // Offset to the first index we want to use
 		0);    // Offset to add to each index when looking up vertices
-	
-	
-		entity0->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
-		ID3D11Buffer* vertexBuffer0 = entity0->GetMesh()->GetVertexBuffer();
-		ID3D11Buffer* indexBuffer0 = entity0->GetMesh()->GetIndexBuffer();
 
-		context->IASetVertexBuffers(0, 1, &vertexBuffer0, &stride, &offset);
-		context->IASetIndexBuffer(indexBuffer0, DXGI_FORMAT_R32_UINT, 0);
+	entity0->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
-		// Finally do the actual drawing
-		context->DrawIndexed(
-			entity0->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-			0,     // Offset to the first index we want to use
-			0);    // Offset to add to each index when looking up vertices
-	 //draw the second one
-	entity2->PrepareMaterial(viewMatrix, projectionMatrix,shadowViewMatrix,shadowProjectionMatrix);
+	ID3D11Buffer* vertexBuffer0 = entity0->GetMesh()->GetVertexBuffer();
+	ID3D11Buffer* indexBuffer0 = entity0->GetMesh()->GetIndexBuffer();
+
+	context->IASetVertexBuffers(0, 1, &vertexBuffer0, &stride, &offset);
+	context->IASetIndexBuffer(indexBuffer0, DXGI_FORMAT_R32_UINT, 0);
+
+	// Finally do the actual drawing
+	context->DrawIndexed(
+		entity0->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+		0,     // Offset to the first index we want to use
+		0);    // Offset to add to each index when looking up vertices
+ //draw the second one
+	entity2->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
 	ID3D11Buffer* vertexBuffer2 = entity2->GetMesh()->GetVertexBuffer();
 	ID3D11Buffer* indexBuffer2 = entity2->GetMesh()->GetIndexBuffer();
-	 
+
 	context->IASetVertexBuffers(0, 1, &vertexBuffer2, &stride, &offset);
 	context->IASetIndexBuffer(indexBuffer2, DXGI_FORMAT_R32_UINT, 0);
-	
+
 	// Finally do the actual drawing
 	context->DrawIndexed(
 		entity2->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
@@ -576,8 +569,8 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	ID3D11Buffer* vertexBuffer3 = entity3->GetMesh()->GetVertexBuffer();
 	ID3D11Buffer* indexBuffer3 = entity3->GetMesh()->GetIndexBuffer();
- 
- 
+
+
 	context->IASetVertexBuffers(0, 1, &vertexBuffer3, &stride, &offset);
 	context->IASetIndexBuffer(indexBuffer3, DXGI_FORMAT_R32_UINT, 0);
 
@@ -617,13 +610,28 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Finally do the actual drawing
 	context->DrawIndexed(
-		entity5->GetMesh()->GetIndexCount(),     
-		0,     
-		0);    
+		entity5->GetMesh()->GetIndexCount(),
+		0,
+		0);
 	////////
-	if (GetAsyncKeyState(VK_LBUTTON)) {
+	if (GetAsyncKeyState('R')&&reload==false) {
+		time = GetTickCount();
+		reload = true;
+	}
+	if(reload==true&&GetTickCount()-time>2000){
+		reload = false;
+		ammos = 5;
+	
+	
+	
+	}
 
+
+
+	if (GetAsyncKeyState(VK_LBUTTON) && ammos > 0 && reload==false) {
+	
 		if (etts.size() == 0) {
+			ammos--;
 			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
 			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
 			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
@@ -633,6 +641,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		}
 
 		else if (GetTickCount() - etts.back()->time > 500) {
+			ammos--;
 			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
 			Material * mtrl = new Material(vertexShader, pixelShader, device, context, L"shell.jpg", L"bnormal.png");
 			Entity *entity123 = new Entity(m_mesh100, mtrl, XMFLOAT3(camera->getdirectionvec()));
@@ -648,11 +657,8 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	if (etts.size() > 0) {
 		for (int i = 0; i < etts.size(); i++) {
-			if (GetAsyncKeyState(VK_SHIFT)) {
-				etts.at(i)->move(1000);
-			}
-			else { etts.at(i)->move(100); }
-
+		 
+		  etts.at(i)->move(100); 
 			etts.at(i)->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 			ID3D11Buffer* vertexBuffer30 = etts.at(i)->GetMesh()->GetVertexBuffer();
 			ID3D11Buffer* indexBuffer30 = etts.at(i)->GetMesh()->GetIndexBuffer();
@@ -665,44 +671,68 @@ void Game::Draw(float deltaTime, float totalTime)
 
 
 		}
+		if (GetTickCount() - etts.at(0)->time > 1000) {
+			Entity *todelete = etts.at(0);
+			etts.erase(etts.begin());
 
+			delete todelete->GetMesh();
+			delete todelete;
+
+		}
 
 	}
-
 
 
 
 	pixelShader->SetShaderResourceView("ShadowMap", 0);
 	context->RSSetState(0);
 	context->OMSetDepthStencilState(0, 0);
-		// After I draw any and all opaque entities, I want to draw the sky
-		ID3D11Buffer* skyVB = m_mesh5->GetVertexBuffer();
-		ID3D11Buffer* skyIB = m_mesh5->GetIndexBuffer();
-
-		// Set buffers in the input assembler
-		context->IASetVertexBuffers(0, 1, &skyVB, &stride, &offset);
-		context->IASetIndexBuffer(skyIB, DXGI_FORMAT_R32_UINT, 0);
-
-		// Set up the sky shaders
-		skyVS->SetMatrix4x4("view", camera->GetViewMatrix());
-		skyVS->SetMatrix4x4("projection", camera->GetProjectionMatrix());
-		skyVS->CopyAllBufferData();
-		skyVS->SetShader();
-
-		skyPS->SetShaderResourceView("SkyTexture", skySRV);
-		skyPS->SetSamplerState("BasicSampler", skySampler);
-		skyPS->SetShader();
-
-		// Set up the render states necessary for the sky
-		context->RSSetState(skyRastState);
-		context->OMSetDepthStencilState(skyDepthState, 0);
-		context->DrawIndexed(m_mesh5->GetIndexCount(), 0, 0);
+	// After I draw any and all opaque entities, I want to draw the sky
 
 
+	ID3D11Buffer* skyVB = m_mesh5->GetVertexBuffer();
+	ID3D11Buffer* skyIB = m_mesh5->GetIndexBuffer();
 
-		context->RSSetState(0);
-		context->OMSetDepthStencilState(0, 0);
+	// Set buffers in the input assembler
+	context->IASetVertexBuffers(0, 1, &skyVB, &stride, &offset);
+	context->IASetIndexBuffer(skyIB, DXGI_FORMAT_R32_UINT, 0);
 
+	// Set up the sky shaders
+	skyVS->SetMatrix4x4("view", camera->GetViewMatrix());
+	skyVS->SetMatrix4x4("projection", camera->GetProjectionMatrix());
+	skyVS->CopyAllBufferData();
+	skyVS->SetShader();
+
+	skyPS->SetShaderResourceView("SkyTexture", skySRV);
+	skyPS->SetSamplerState("BasicSampler", skySampler);
+	skyPS->SetShader();
+
+	// Set up the render states necessary for the sky
+	context->RSSetState(skyRastState);
+	context->OMSetDepthStencilState(skyDepthState, 0);
+	context->DrawIndexed(m_mesh5->GetIndexCount(), 0, 0);
+
+
+
+	context->RSSetState(0);
+	context->OMSetDepthStencilState(0, 0);
+	ammo->Begin(); font->DrawString(ammo.get(), (L"Score:" + to_wstring(ammos)).c_str(), SimpleMath::Vector2(1000, 50));
+	if (ammos > 0) {
+		
+	ammo->Draw(ammoTexture, SimpleMath::Vector2(10, 10));
+}
+	if (ammos > 1) {
+	ammo->Draw(ammoTexture, SimpleMath::Vector2(50, 10));
+}
+	if (ammos > 2) {
+	ammo->Draw(ammoTexture, SimpleMath::Vector2(90, 10));
+}
+	if (ammos > 3) {
+	ammo->Draw(ammoTexture, SimpleMath::Vector2(130, 10));
+}
+		if (ammos > 4) {
+			ammo->Draw(ammoTexture, SimpleMath::Vector2(170, 10));
+		}ammo->End();
 
 		float blendArray[4] = { 1,1,1,1 };
 		
@@ -717,11 +747,11 @@ void Game::Draw(float deltaTime, float totalTime)
 		context->OMSetBlendState(0, blendArray, 0xffffffff);
 		context->OMSetDepthStencilState(0, 0);
 		
-		
-
 	
 	
+	
 
+	
 
 
 
@@ -737,40 +767,11 @@ void Game::Draw(float deltaTime, float totalTime)
 
 void Game::UpdateCameraAxis(int x,int y)
 {
-	float deltaX = (float)(x - prevMousePos.x);
-	float deltaY = (float)(y - prevMousePos.y);
-	float deltaXAxis = deltaY / 300;
-	float deltaYAxis = deltaX / 300;
+ 
+ 
  
 
-	if (flagc == false && flagd == false) {
-		shame = deltaXAxis;
-		if (deltaXAxis > 0) {
-
-			flagc = true;
-		}
-		else if (deltaXAxis < 0) {
-			flagd = true;
-
-
-		}
-	}
-
-
-	if (flaga==false&&flagb==false) {
-		shame1 = deltaYAxis;
-		if (deltaYAxis > 0) {
-			
-			flaga = true;
-		}
-		else if (deltaYAxis < 0) {
-			flagb = true;
-
-
-		}
-	}
-	camera->UpdateXAxis(deltaXAxis);
-	camera->UpdateYAxis(deltaYAxis);
+ 
 }
 
 void Game::CreateMaterials()
@@ -829,8 +830,7 @@ void Game::OnMouseDown(WPARAM buttonState, int x, int y)
 	// Add any custom code here...
 
 	// Save the previous mouse position, so we have it for the future
-	prevMousePos.x = x;
-	prevMousePos.y = y;
+ 
 
 	// Caputure the mouse so we keep getting mouse move
 	// events even if the mouse leaves the window.  we'll be
@@ -857,18 +857,7 @@ void Game::OnMouseUp(WPARAM buttonState, int x, int y)
 // --------------------------------------------------------
 void Game::OnMouseMove(WPARAM buttonState, int x, int y)
 {
-	if ((prevMousePos.x<-10000)||(prevMousePos.y<-10000))
-	{
-		prevMousePos.x = x;
-		prevMousePos.y = y;
-	}
-	// Add any custom code here...
-	UpdateCameraAxis(x, y);
-	XMMATRIX V = XMLoadFloat4x4(&camera->GetViewMatrix());
-	XMStoreFloat4x4(&viewMatrix, V); // Transpose for HLSL!
-	// Save the previous mouse position, so we have it for the future
-	prevMousePos.x = x;
-	prevMousePos.y = y;
+ 
 }
 
 // --------------------------------------------------------

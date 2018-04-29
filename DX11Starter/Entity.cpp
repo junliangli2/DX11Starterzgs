@@ -60,7 +60,7 @@ void Entity::move(int scale)
 {
 	position.x += dir.x / scale;
 
-	position.y += dir.y / scale;
+	position.y += .0002f;
 
 	position.z += dir.z / scale;
 

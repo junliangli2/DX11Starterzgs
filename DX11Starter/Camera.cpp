@@ -11,7 +11,7 @@ Camera::~Camera()
 
 Camera::Camera()
 {
-	position=XMFLOAT3(0, 0, -5);
+	position = XMFLOAT3(-2, -6.3f, 12);
 	direction = XMFLOAT3(0, 0, 1);
 	xAxis = 0.0f;
 	yAxis = 0.0f;
@@ -70,10 +70,10 @@ XMFLOAT3 Camera::getdirectionvec()
 void Camera::Update()
 {
 	XMFLOAT3 forward(0, 0, 1);
-	XMFLOAT3 up(0,1,0);
+	XMFLOAT3 up(0, 1, 0);
 	XMVECTOR forwardVec = XMLoadFloat3(&forward);
 	XMVECTOR upVec = XMLoadFloat3(&up);
-	XMVECTOR directionVec = XMVector3Rotate(forwardVec, XMQuaternionRotationRollPitchYaw(xAxis,yAxis,0));
+	XMVECTOR directionVec = XMVector3Rotate(forwardVec, XMQuaternionRotationRollPitchYaw(xAxis, yAxis, 0));
 	//XMVECTOR directionVec = XMVectorSet(0, 0, 1,0);
 	XMVECTOR positionVec = XMLoadFloat3(&position);
 	if (GetAsyncKeyState('W') & 0x8000)
@@ -86,7 +86,7 @@ void Camera::Update()
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
-		positionVec = positionVec - XMVector3Cross(upVec,directionVec) * 0.001f;
+		positionVec = positionVec - XMVector3Cross(upVec, directionVec) * 0.001f;
 	}
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
@@ -103,9 +103,9 @@ void Camera::Update()
 		positionVec = positionVec - upVec * 0.001f;
 	}
 	XMStoreFloat3(&direction, directionVec);
-	 
+
 	XMStoreFloat3(&position, positionVec);
-	
+
 	XMMATRIX asd;
 	asd = XMMatrixLookToLH(positionVec, directionVec, upVec);
 	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(asd));

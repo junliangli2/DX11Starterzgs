@@ -9,8 +9,9 @@
 #include "Material.h"
 #include "Light.h"
 #include "Emitter.h"
-
-
+#include "SpriteBatch.h"
+#include "SpriteFont.h"
+#include "DDSTextureLoader.h"
 class Game 
 	: public DXCore
 {
@@ -118,11 +119,12 @@ private:
 	//DirectX::XMFLOAT4X4 worldMatrix;
 	DirectX::XMFLOAT4X4 viewMatrix;
 	DirectX::XMFLOAT4X4 projectionMatrix;
-
-	// Keeps track of the old mouse position.  Useful for 
-	// determining how far the mouse moved in a single frame.
-	POINT prevMousePos;
+  
 
 
+	std::unique_ptr<SpriteBatch> ammo;
+	std::unique_ptr<SpriteFont> font;
+	ID3D11ShaderResourceView* ammoTexture;
+	 
 };
 
