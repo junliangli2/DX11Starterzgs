@@ -24,9 +24,9 @@ public:
 private:
 	// Buffers to hold actual geometry data
 	char* name;
-	int m_terrainWidth = 257.0;
-	int m_terrainHeight = 257.0;
-	float m_heightScale = 15.0;
+	int terrainWidth = 257.0;
+	int terrainHeight = 257.0;
+	float heightScale = 15.0;
 
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
@@ -45,8 +45,8 @@ private:
 		float tu, tv;
 		float nx, ny, nz;
 	};
-	HeightMapType* m_heightMap = 0;
-	ModelType* m_terrainModel = 0;
+	HeightMapType* heightMap = 0;
+	ModelType* terrainModel = 0;
 
 	//An integer specifying how many indices are in the mesh's index buffer
 	int m_indexCount;

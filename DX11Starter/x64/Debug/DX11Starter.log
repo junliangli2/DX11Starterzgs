@@ -1,7 +1,23 @@
-﻿  Game.cpp
-d:\users\user\documents\github\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
-d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(436): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(618): warning C4244: '=': conversion from 'DWORD' to 'float', possible loss of data
-  DX11Starter.vcxproj -> D:\Users\User\Documents\GitHub\DX11Starterzgs\x64\Debug\DX11Starter.exe
+﻿  Entity.cpp
+d:\program files (x86)\source\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\program files (x86)\source\dx11starterzgs\dx11starter\entity.cpp(48): warning C4305: 'argument': truncation from 'double' to 'float'
+d:\program files (x86)\source\dx11starterzgs\dx11starter\entity.cpp(53): warning C4305: 'argument': truncation from 'double' to 'float'
+d:\program files (x86)\source\dx11starterzgs\dx11starter\entity.cpp(55): warning C4305: 'argument': truncation from 'double' to 'float'
+  Game.cpp
+d:\program files (x86)\source\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\program files (x86)\source\dx11starterzgs\dx11starter\game.cpp(436): warning C4305: 'argument': truncation from 'double' to 'float'
+d:\program files (x86)\source\dx11starterzgs\dx11starter\game.cpp(618): warning C4244: '=': conversion from 'DWORD' to 'float', possible loss of data
+  Main.cpp
+d:\program files (x86)\source\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Mesh.cpp
+d:\program files (x86)\source\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
+  DX11Starter.vcxproj -> D:\Program Files (x86)\Source\DX11Starterzgs\x64\Debug\DX11Starter.exe
