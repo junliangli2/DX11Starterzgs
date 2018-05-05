@@ -409,7 +409,7 @@ void Mesh::SetBuffers(Vertex * vertexArray, int vertexCount, UINT * indexArray, 
 	
 	m_indexCount = indexCount;
 
-	// Create the VERTEX BUFFER description -----------------------------------
+	// Create the VERTEX BUFFER description //
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
 	vbd.ByteWidth = sizeof(Vertex) * vertexCount;
