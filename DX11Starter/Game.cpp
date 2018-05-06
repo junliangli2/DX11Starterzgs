@@ -186,7 +186,8 @@ void Game::LoadShaders()
 	material4 = new Material(vertexShader, pixelShader, device, context, L"houseA.jpg", L"houseANM.jpg");
 	material5 = new Material(vertexShader, pixelShader, device, context, L"house1.bmp", L"house1_n.bmp");
 	material6 = new Material(vertexShader, pixelShader, device, context, L"Wolf_Body.jpg", L"Wolf_Body_NRM.jpg");
-	//material6 = new Material(vertexShader, pixelShader, device, context, L"houseA.jpg", L"houseANM.jpg");
+	material7 = new Material(vertexShader, pixelShader, device, context, L"auto.jpg", L"auto_NRM.jpg");
+	material8 = new Material(vertexShader, pixelShader, device, context, L"Umbreon.png", L"Umbreon_NRM.jpg");
 }
 
 
@@ -253,8 +254,9 @@ void Game::CreateBasicGeometry()
 	m_mesh4 = new Mesh("house.obj", device);
 	m_mesh5 = new Mesh("cube.obj", device);
 	m_mesh6 = new Mesh("Wolf.obj", device);
-	//m_mesh6 = new Mesh("house.obj", device);
-
+	m_mesh7 = new Mesh("Puss_in_Boots.obj", device);
+	m_mesh8 = new Mesh("UmbreonLowPoly.obj", device);
+	
 	entity0 = new Entity(m_mesh0, material0);
 	
 	entity1 = new Entity(m_mesh1,material1);
@@ -264,6 +266,28 @@ void Game::CreateBasicGeometry()
 	entity4 = new Entity(m_mesh3, material4);
 	entity5 = new Entity(m_mesh4, material5);
 	entity6 = new Entity(m_mesh6, material6);
+	entity7 = new Entity(m_mesh7, material7);
+	entity8 = new Entity(m_mesh8, material8);
+
+
+	entity0->SetPosition(-100.0f, -10.0f, -20.0f);
+	entity1->SetPosition(0, 0, 0);
+	entity4->SetScale(0.05f, 0.05f, 0.05f);
+	entity4->SetPosition(-5, -8.3f, 25.0f);
+	entity4->SetRotation(.1f, 63, -.06f);
+	entity5->SetScale(0.05f, 0.05f, 0.05f);
+	entity5->SetPosition(2, -8.3f, 22);
+	entity5->SetRotation(0, 90, 0);
+	entity6->SetScale(1.0f, 1.0f, 1.0f);
+	entity6->SetPosition(-2, -8.4, 23);
+	//entity6->SetRotation(0, 90, 0);
+	entity7->SetScale(0.8f, 0.8f, 0.8f);
+	entity7->SetPosition(3.2, -8.7, 30);
+	entity7->SetRotation(0, 90, 0);
+	entity8->SetScale(0.3f, 0.3f, 0.3f);
+	entity8->SetPosition(-2.5, -7.8, 23);
+	//entity8->SetRotation(0, 90, 0);
+
 }
 
 void Game::CreateCamera()
@@ -374,6 +398,20 @@ void Game::CreateSkybox()
 	ds.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	device->CreateDepthStencilState(&ds, &skyDepthState);
 }
+void Game::MoveCharacters(float deltaTime)
+{
+	//entity7->cat
+	XMFLOAT3 entity7Direction = XMFLOAT3(-6.4*deltaTime*0.1, 1 * deltaTime*0.1, -7 * deltaTime*0.1);
+	XMFLOAT3 entity7TempPos = entity7->GetPosition();
+	entity7TempPos = XMFLOAT3(entity7TempPos.x + entity7Direction.x, entity7TempPos.y + entity7Direction.y, entity7TempPos.z + entity7Direction.z);
+	if (entity7TempPos.x < -10 && entity7TempPos.z < 14.91) {
+		entity7->SetPosition(3.2, -8.7, 30);
+	}
+	else {
+		entity7->SetPosition(entity7TempPos.x, entity7TempPos.y, entity7TempPos.z);
+	}
+	//cout << entity7TempPos.x<<","<< entity7TempPos.y << "," << entity7TempPos.z<<endl;
+}
 // --------------------------------------------------------
 // Handle resizing DirectX "stuff" to match the new window size.
 // For instance, updating our projection matrix's aspect ratio.
@@ -416,18 +454,7 @@ void Game::Update(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
-	entity0->SetPosition(-100.0f, -10.0f, -20.0f);
-	entity1->SetPosition(0, 0 , 0 );
-	entity4->SetScale(0.05f, 0.05f, 0.05f);
-	entity4->SetPosition(-5,-8.3f, 25.0f);
-	entity4->SetRotation(.1f, 63, -.06f);
-	entity5->SetScale(0.05f, 0.05f, 0.05f);
-	entity5->SetPosition(2, -8.3f, 22);
-	entity5->SetRotation(0, 90, 0);
-	entity6->SetScale(1.0f, 1.0f, 1.0f);
-	entity6->SetPosition(-2, -5, 23);
-	entity6->SetRotation(0, 90, 0);
-
+	
 	
 	  
 	if (isFiring == true) {
@@ -454,7 +481,9 @@ void Game::Update(float deltaTime, float totalTime)
 	entity2->SetPosition(camera->getpositionvec().x+.03f, camera->getpositionvec().y, camera->getpositionvec().z+.08f);
  
 	entity2->SetRotation( 0,-89.55, .1f);
-	 
+	
+	MoveCharacters(deltaTime);
+
 	XMMATRIX V = XMLoadFloat4x4(&camera->GetViewMatrix());
 	XMStoreFloat4x4(&viewMatrix, V); // Transpose for HLSL!
 }
@@ -506,6 +535,14 @@ void Game::Draw(float deltaTime, float totalTime)
 	shadowVS->SetMatrix4x4("world", entity6->GetWorldMatrix());
 	shadowVS->CopyAllBufferData();
 	context->DrawIndexed(entity6->GetMesh()->GetIndexCount(), 0, 0);
+	entity7->DrawShadow(context);
+	shadowVS->SetMatrix4x4("world", entity7->GetWorldMatrix());
+	shadowVS->CopyAllBufferData();
+	context->DrawIndexed(entity7->GetMesh()->GetIndexCount(), 0, 0);
+	entity8->DrawShadow(context);
+	shadowVS->SetMatrix4x4("world", entity8->GetWorldMatrix());
+	shadowVS->CopyAllBufferData();
+	context->DrawIndexed(entity8->GetMesh()->GetIndexCount(), 0, 0);
 	context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
 	viewport.Width = (float)width;
 	viewport.Height = (float)height;
@@ -723,7 +760,38 @@ void Game::Draw(float deltaTime, float totalTime)
 		0,     // Offset to the first index we want to use
 		0);    // Offset to add to each index when looking up vertices
 	//end entity6
+
+	//entity7
+	entity7->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
+
+	ID3D11Buffer* vertexBuffer7 = entity7->GetMesh()->GetVertexBuffer();
+	ID3D11Buffer* indexBuffer7 = entity7->GetMesh()->GetIndexBuffer();
+
+	context->IASetVertexBuffers(0, 1, &vertexBuffer7, &stride, &offset);
+	context->IASetIndexBuffer(indexBuffer7, DXGI_FORMAT_R32_UINT, 0);
+
+	// Finally do the actual drawing
+	context->DrawIndexed(
+		entity7->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+		0,     // Offset to the first index we want to use
+		0);    // Offset to add to each index when looking up vertices
+	//end entity7
 	
+	//entity8
+	entity8->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
+
+	ID3D11Buffer* vertexBuffer8 = entity8->GetMesh()->GetVertexBuffer();
+	ID3D11Buffer* indexBuffer8 = entity8->GetMesh()->GetIndexBuffer();
+
+	context->IASetVertexBuffers(0, 1, &vertexBuffer8, &stride, &offset);
+	context->IASetIndexBuffer(indexBuffer8, DXGI_FORMAT_R32_UINT, 0);
+
+	// Finally do the actual drawing
+	context->DrawIndexed(
+		entity8->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+		0,     // Offset to the first index we want to use
+		0);    // Offset to add to each index when looking up vertices
+	//end entity8
 
 	pixelShader->SetShaderResourceView("ShadowMap", 0);
 	context->RSSetState(0);

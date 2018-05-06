@@ -32,6 +32,7 @@ public:
 	void OnMouseUp	 (WPARAM buttonState, int x, int y);
 	void OnMouseMove (WPARAM buttonState, int x, int y);
 	void OnMouseWheel(float wheelDelta,   int x, int y);
+	
 private:
 
 	// Initialization helper methods - feel free to customize, combine, etc.
@@ -44,6 +45,7 @@ private:
 	void UpdateCameraAxis(int x,int y);
 	void CreateMaterials();
 	void CreateSkybox();
+	void MoveCharacters(float deltaTime);
 
 	//Managers
 	 
@@ -72,7 +74,9 @@ private:
 	Mesh *m_mesh3;
 	Mesh *m_mesh4;
 	Mesh *m_mesh5;
-	Mesh *m_mesh6; //CONDOR
+	Mesh *m_mesh6; //wolf
+	Mesh *m_mesh7;
+	Mesh *m_mesh8; 
 
 	//Entities
 	Entity* entity0;
@@ -81,7 +85,9 @@ private:
 	Entity* entity3;
 	Entity* entity4;
 	Entity* entity5;
-	Entity* entity6; //CONDOR
+	Entity* entity6; //wolf
+	Entity* entity7; 
+	Entity* entity8; 
 
 	//Materials
 	Material* material0;
@@ -90,7 +96,9 @@ private:
 	Material* material3;
 	Material* material4;
 	Material* material5;
-	Material* material6; //CONDOR
+	Material* material6; //wolf
+	Material* material7; 
+	Material* material8; 
 
 	ID3D11Texture2D* pShadowMap;
 	ID3D11DepthStencilView*	pShadowMapDepthView;
