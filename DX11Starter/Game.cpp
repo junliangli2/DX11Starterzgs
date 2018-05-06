@@ -185,7 +185,8 @@ void Game::LoadShaders()
 	material3 = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
 	material4 = new Material(vertexShader, pixelShader, device, context, L"houseA.jpg", L"houseANM.jpg");
 	material5 = new Material(vertexShader, pixelShader, device, context, L"house1.bmp", L"house1_n.bmp");
-
+	material6 = new Material(vertexShader, pixelShader, device, context, L"Wolf_Body.jpg", L"Wolf_Body_NRM.jpg");
+	//material6 = new Material(vertexShader, pixelShader, device, context, L"houseA.jpg", L"houseANM.jpg");
 }
 
 
@@ -251,7 +252,9 @@ void Game::CreateBasicGeometry()
 	m_mesh3 = new Mesh("houseA_obj.obj", device);
 	m_mesh4 = new Mesh("house.obj", device);
 	m_mesh5 = new Mesh("cube.obj", device);
-	
+	m_mesh6 = new Mesh("Wolf.obj", device);
+	//m_mesh6 = new Mesh("house.obj", device);
+
 	entity0 = new Entity(m_mesh0, material0);
 	
 	entity1 = new Entity(m_mesh1,material1);
@@ -260,6 +263,7 @@ void Game::CreateBasicGeometry()
 	entity3->SetPosition(-3,-3,0);
 	entity4 = new Entity(m_mesh3, material4);
 	entity5 = new Entity(m_mesh4, material5);
+	entity6 = new Entity(m_mesh6, material6);
 }
 
 void Game::CreateCamera()
@@ -326,15 +330,15 @@ void Game::Createshadowmap()
 void Game::CreateParticles()
 {
 	campfireEmitter = new Emitter(
-		1,
-		20,
-		0.4f,
-		0.1f,
-		2.0f,
+		1, // numParticles
+		20, //emitRate
+		1.0f, //particleLifetime
+		1.0f, //startSize
+		1.0f, //startSize
 		XMFLOAT4(1, 0.1f, 0.1f, 1.0f),	// Start color
 		XMFLOAT4(1, 0.6f, 0.1f, 0.0f),		// End color
-		XMFLOAT3(0.0f, 1.2f, 0.0f),				// Start velocity
-		XMFLOAT3(1.0f, 0.3f, -2),				// Start position
+		XMFLOAT3(0.0f, 0.0f, 0.0f),				// Start velocity
+		XMFLOAT3(0.0f, 0.0f, 0.0f),				// Start position
 		XMFLOAT3(),				// Start acceleration
 		particleVShader,
 		particlePShader,
@@ -420,12 +424,28 @@ void Game::Update(float deltaTime, float totalTime)
 	entity5->SetScale(0.05f, 0.05f, 0.05f);
 	entity5->SetPosition(2, -8.3f, 22);
 	entity5->SetRotation(0, 90, 0);
+	entity6->SetScale(1.0f, 1.0f, 1.0f);
+	entity6->SetPosition(-2, -5, 23);
+	entity6->SetRotation(0, 90, 0);
 
 	
 	  
- 
-	campfireEmitter->Update(deltaTime);
- 
+	if (isFiring == true) {
+		campfireEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x, camera->getpositionvec().y+0.2, camera->getpositionvec().z+10));
+		campfireEmitter->Update(deltaTime);
+		static float timer = 0.1f;
+		if (timer < 0) {
+			isFiring = false;
+			timer = 0.1f;
+		}
+		else {
+			timer =timer-deltaTime;
+		}
+	}
+	else {
+		campfireEmitter->SetPosition(XMFLOAT3(0, -20, 0));//invisible
+		campfireEmitter->Update(deltaTime);
+	}
 	//update the camera
 	camera->Update();
 	 
@@ -482,6 +502,10 @@ void Game::Draw(float deltaTime, float totalTime)
 	shadowVS->SetMatrix4x4("world", entity5->GetWorldMatrix());
 	shadowVS->CopyAllBufferData();
 	context->DrawIndexed(entity5->GetMesh()->GetIndexCount(), 0, 0);
+	entity6->DrawShadow(context);
+	shadowVS->SetMatrix4x4("world", entity6->GetWorldMatrix());
+	shadowVS->CopyAllBufferData();
+	context->DrawIndexed(entity6->GetMesh()->GetIndexCount(), 0, 0);
 	context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
 	viewport.Width = (float)width;
 	viewport.Height = (float)height;
@@ -548,7 +572,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		entity0->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
 		0,     // Offset to the first index we want to use
 		0);    // Offset to add to each index when looking up vertices
- //draw the second one
+	//draw the second one
 	entity2->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
 	ID3D11Buffer* vertexBuffer2 = entity2->GetMesh()->GetVertexBuffer();
@@ -629,7 +653,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 
 	if (GetAsyncKeyState(VK_LBUTTON) && ammos > 0 && reload==false) {
-	
+		
 		if (etts.size() == 0) {
 			ammos--;
 			Mesh *m_mesh100 = new Mesh("sphere.obj", device);
@@ -638,6 +662,7 @@ void Game::Draw(float deltaTime, float totalTime)
 			entity123->SetScale(.01f, .01f, .01f);
 			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
 			etts.push_back(entity123);
+			isFiring = true;
 		}
 
 		else if (GetTickCount() - etts.back()->time > 500) {
@@ -648,6 +673,7 @@ void Game::Draw(float deltaTime, float totalTime)
 			entity123->SetScale(.01f, .01f, .01f);
 			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
 			etts.push_back(entity123);
+			isFiring = true;
 		}
 
 
@@ -682,7 +708,22 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	}
 
+	//entity6
+	entity6->PrepareMaterial(viewMatrix, projectionMatrix, shadowViewMatrix, shadowProjectionMatrix);
 
+	ID3D11Buffer* vertexBuffer6 = entity6->GetMesh()->GetVertexBuffer();
+	ID3D11Buffer* indexBuffer6 = entity6->GetMesh()->GetIndexBuffer();
+
+	context->IASetVertexBuffers(0, 1, &vertexBuffer6, &stride, &offset);
+	context->IASetIndexBuffer(indexBuffer6, DXGI_FORMAT_R32_UINT, 0);
+
+	// Finally do the actual drawing
+	context->DrawIndexed(
+		entity6->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+		0,     // Offset to the first index we want to use
+		0);    // Offset to add to each index when looking up vertices
+	//end entity6
+	
 
 	pixelShader->SetShaderResourceView("ShadowMap", 0);
 	context->RSSetState(0);
@@ -730,33 +771,25 @@ void Game::Draw(float deltaTime, float totalTime)
 	if (ammos > 3) {
 	ammo->Draw(ammoTexture, SimpleMath::Vector2(130, 10));
 }
-		if (ammos > 4) {
-			ammo->Draw(ammoTexture, SimpleMath::Vector2(170, 10));
-		}ammo->End();
+	if (ammos > 4) {
+		ammo->Draw(ammoTexture, SimpleMath::Vector2(170, 10));
+	}ammo->End();
 
-		float blendArray[4] = { 1,1,1,1 };
+	//particles
+	float blendArray[4] = { 1,1,1,1 };
 		
-		context->OMSetBlendState(particleBlendState, blendArray, 0xffffffff);
-		context->OMSetDepthStencilState(particleDepthState, 0);
+	context->OMSetBlendState(particleBlendState, blendArray, 0xffffffff);
+	context->OMSetDepthStencilState(particleDepthState, 0);
 
-		particlePShader->SetSamplerState("trilinear", particleSample);
-		campfireEmitter->Render(context, viewMatrix, projectionMatrix);
+	particlePShader->SetSamplerState("trilinear", particleSample);
+	campfireEmitter->Render(context, viewMatrix, projectionMatrix);
 		
 		
 		
-		context->OMSetBlendState(0, blendArray, 0xffffffff);
-		context->OMSetDepthStencilState(0, 0);
+	context->OMSetBlendState(0, blendArray, 0xffffffff);
+	context->OMSetDepthStencilState(0, 0);
 		
-	
-	
-	
 
-	
-
-
-
-
- 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME (always at the very end of the frame)
@@ -767,10 +800,12 @@ void Game::Draw(float deltaTime, float totalTime)
 
 void Game::UpdateCameraAxis(int x,int y)
 {
- 
- 
- 
-
+	float deltaX = x - prevMousePos.x;
+	float deltaY = y - prevMousePos.y;
+	float deltaXAxis = deltaY / 720;
+	float deltaYAxis = deltaX / 720;
+	camera->UpdateXAxis(deltaXAxis);
+	camera->UpdateYAxis(deltaYAxis);
  
 }
 
@@ -778,7 +813,7 @@ void Game::CreateMaterials()
 {
 	//import particle texture
  
-	CreateWICTextureFromFile(device, context,L"fireParticle.jpg", 0, &particleSRV);
+	CreateWICTextureFromFile(device, context,L"gunFire.jpg", 0, &particleSRV);
 
 	// Create a sampler state for texture sampling
 	D3D11_SAMPLER_DESC psamplerDesc = {};
@@ -857,7 +892,18 @@ void Game::OnMouseUp(WPARAM buttonState, int x, int y)
 // --------------------------------------------------------
 void Game::OnMouseMove(WPARAM buttonState, int x, int y)
 {
- 
+	if ((prevMousePos.x<-10000) || (prevMousePos.y<-10000))
+	{
+		prevMousePos.x = x;
+		prevMousePos.y = y;
+	}
+	// Add any custom code here...
+	UpdateCameraAxis(x, y);
+	XMMATRIX V = XMLoadFloat4x4(&camera->GetViewMatrix());
+	XMStoreFloat4x4(&viewMatrix, V); // Transpose for HLSL!
+									 // Save the previous mouse position, so we have it for the future
+	prevMousePos.x = x;
+	prevMousePos.y = y;
 }
 
 // --------------------------------------------------------

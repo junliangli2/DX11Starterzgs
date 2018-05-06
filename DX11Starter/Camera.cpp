@@ -78,19 +78,19 @@ void Camera::Update()
 	XMVECTOR positionVec = XMLoadFloat3(&position);
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		positionVec = positionVec + directionVec * 0.001f;
+		positionVec = positionVec + directionVec * 0.01f;
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
-		positionVec = positionVec - directionVec * 0.001f;
+		positionVec = positionVec - directionVec * 0.01f;
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
-		positionVec = positionVec - XMVector3Cross(upVec, directionVec) * 0.001f;
+		positionVec = positionVec - XMVector3Cross(upVec, directionVec) * 0.01f;
 	}
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
-		positionVec = positionVec + XMVector3Cross(upVec, directionVec) * 0.001f;
+		positionVec = positionVec + XMVector3Cross(upVec, directionVec) * 0.01f;
 	}
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)

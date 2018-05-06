@@ -72,6 +72,7 @@ private:
 	Mesh *m_mesh3;
 	Mesh *m_mesh4;
 	Mesh *m_mesh5;
+	Mesh *m_mesh6; //CONDOR
 
 	//Entities
 	Entity* entity0;
@@ -80,6 +81,7 @@ private:
 	Entity* entity3;
 	Entity* entity4;
 	Entity* entity5;
+	Entity* entity6; //CONDOR
 
 	//Materials
 	Material* material0;
@@ -88,6 +90,7 @@ private:
 	Material* material3;
 	Material* material4;
 	Material* material5;
+	Material* material6; //CONDOR
 
 	ID3D11Texture2D* pShadowMap;
 	ID3D11DepthStencilView*	pShadowMapDepthView;
@@ -125,6 +128,10 @@ private:
 	std::unique_ptr<SpriteBatch> ammo;
 	std::unique_ptr<SpriteFont> font;
 	ID3D11ShaderResourceView* ammoTexture;
+
+	POINT prevMousePos;
 	 
+	//
+	bool isFiring = false;
 };
 

@@ -12,6 +12,7 @@ class Material
 
 public:
 	Material(SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader, ID3D11Device* device, ID3D11DeviceContext* context, wchar_t* fileName, wchar_t* fileName2);
+	Material(SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader, ID3D11Device* device, ID3D11DeviceContext* context, wchar_t* fileName);
 	Material();
 	
 	~Material();
