@@ -292,13 +292,13 @@ void Game::CreateBasicGeometry()
 	entity5->SetPosition(2, -8.3f, 22);
 	entity5->SetRotation(0, 90, 0);
 	entity6->SetScale(1.0f, 1.0f, 1.0f);
-	entity6->SetPosition(-3.2, -9.0, 30);
+	entity6->SetPosition(-3.2f, -9.0f, 30);
 	//entity6->SetRotation(0, 90, 0);
 	entity7->SetScale(0.8f, 0.8f, 0.8f);
-	entity7->SetPosition(3.2, -8.7, 30);
+	entity7->SetPosition(3.2f, -8.7f, 30);
 	entity7->SetRotation(0, 90, 0);
 	entity8->SetScale(0.3f, 0.3f, 0.3f);
-	entity8->SetPosition(-2.5, -8.6, 30);
+	entity8->SetPosition(-2.5f, -8.6f, 30);
 	//entity8->SetRotation(0, 90, 0);
 
 }
@@ -446,11 +446,11 @@ void Game::CreateSkybox()
 void Game::MoveCharacters(float deltaTime)
 {
 	//entity7->cat
-	XMFLOAT3 entity7Direction = XMFLOAT3(-6.4*deltaTime*0.1, 1 * deltaTime*0.1, -7 * deltaTime*0.1);
+	XMFLOAT3 entity7Direction = XMFLOAT3(-6.4f*deltaTime*0.1f, 1 * deltaTime*0.1f, -7 * deltaTime*0.1f);
 	XMFLOAT3 entity7TempPos = entity7->GetPosition();
 	entity7TempPos = XMFLOAT3(entity7TempPos.x + entity7Direction.x, entity7TempPos.y + entity7Direction.y, entity7TempPos.z + entity7Direction.z);
-	if (entity7TempPos.x < -10 && entity7TempPos.z < 14.91) {
-		entity7->SetPosition(3.2, -8.7, 30);
+	if (entity7TempPos.x < -10 && entity7TempPos.z < 14.91f) {
+		entity7->SetPosition(3.2f, -8.7f, 30);
 	}
 	else {
 		entity7->SetPosition(entity7TempPos.x, entity7TempPos.y, entity7TempPos.z);
@@ -458,11 +458,11 @@ void Game::MoveCharacters(float deltaTime)
 	//cout << entity7TempPos.x<<","<< entity7TempPos.y << "," << entity7TempPos.z<<endl;
 
 	//entity6->wolf
-	XMFLOAT3 entity6Direction = XMFLOAT3(1.4*deltaTime*0.1, 1.1 * deltaTime*0.1, -10 * deltaTime*0.1);
+	XMFLOAT3 entity6Direction = XMFLOAT3(1.4f*deltaTime*0.1f, 1.1f * deltaTime*0.1f, -10 * deltaTime*0.1f);
 	XMFLOAT3 entity6TempPos = entity6->GetPosition();
 	entity6TempPos = XMFLOAT3(entity6TempPos.x + entity6Direction.x, entity6TempPos.y + entity6Direction.y, entity6TempPos.z + entity6Direction.z);
-	if (entity6TempPos.x > -1.127 && entity6TempPos.z < 15.19) {
-		entity6->SetPosition(-3.2, -9.0, 30);
+	if (entity6TempPos.x > -1.127f && entity6TempPos.z < 15.19f) {
+		entity6->SetPosition(-3.2f, -9.0f, 30);
 	}
 	else {
 		entity6->SetPosition(entity6TempPos.x, entity6TempPos.y, entity6TempPos.z);
@@ -471,11 +471,11 @@ void Game::MoveCharacters(float deltaTime)
 	
 
 	//entity8
-	XMFLOAT3 entity8Direction = XMFLOAT3(0, 1.4 * deltaTime*0.1, -15 * deltaTime*0.1);
+	XMFLOAT3 entity8Direction = XMFLOAT3(0, 1.4f * deltaTime*0.1f, -15 * deltaTime*0.1f);
 	XMFLOAT3 entity8TempPos = entity8->GetPosition();
 	entity8TempPos = XMFLOAT3(entity8TempPos.x + entity8Direction.x, entity8TempPos.y + entity8Direction.y, entity8TempPos.z + entity8Direction.z);
-	if (entity8TempPos.y > -7.235 && entity8TempPos.z < 15.38) {
-		entity8->SetPosition(-2.5, -8.6, 30);
+	if (entity8TempPos.y > -7.235f && entity8TempPos.z < 15.38f) {
+		entity8->SetPosition(-2.5f, -8.6f, 30);
 	}
 	else {
 		entity8->SetPosition(entity8TempPos.x, entity8TempPos.y, entity8TempPos.z);
@@ -517,9 +517,9 @@ void Game::CheckShooted(float deltaTime)
 		}
 		else if(firetimer==0.7f){
 			firetimer = firetimer - deltaTime;
-			explosionEmitter->SetPosition(XMFLOAT3(entity6->GetPosition().x, entity6->GetPosition().y+0.5 , entity6->GetPosition().z));
+			explosionEmitter->SetPosition(XMFLOAT3(entity6->GetPosition().x, entity6->GetPosition().y+0.5f , entity6->GetPosition().z));
 			explosionEmitter->Update(deltaTime);
-			entity6->SetPosition(-3.2, -9.0, 30);
+			entity6->SetPosition(-3.2f, -9.0f, 30);
 		}
 		else {
 			firetimer = firetimer - deltaTime;
@@ -538,9 +538,9 @@ void Game::CheckShooted(float deltaTime)
 		}
 		else if (cattimer == 0.7f) {
 			cattimer = cattimer - deltaTime;
-			explosionEmitter->SetPosition(XMFLOAT3(entity7->GetPosition().x, entity7->GetPosition().y + 0.5, entity7->GetPosition().z));
+			explosionEmitter->SetPosition(XMFLOAT3(entity7->GetPosition().x, entity7->GetPosition().y + 0.5f, entity7->GetPosition().z));
 			explosionEmitter->Update(deltaTime);
-			entity7->SetPosition(3.2, -8.7, 30);
+			entity7->SetPosition(3.2f, -8.7f, 30);
 		}
 		else {
 			cattimer = cattimer - deltaTime;
@@ -560,9 +560,9 @@ void Game::CheckShooted(float deltaTime)
 		}
 		else if (elftimer == 0.7f) {
 			elftimer = elftimer - deltaTime;
-			explosionEmitter->SetPosition(XMFLOAT3(entity8->GetPosition().x, entity8->GetPosition().y + 0.5, entity8->GetPosition().z));
+			explosionEmitter->SetPosition(XMFLOAT3(entity8->GetPosition().x, entity8->GetPosition().y + 0.5f, entity8->GetPosition().z));
 			explosionEmitter->Update(deltaTime);
-			entity8->SetPosition(-2.5, -8.6, 30);
+			entity8->SetPosition(-2.5f, -8.6f, 30);
 		}
 		else {
 			elftimer = elftimer - deltaTime;
@@ -625,7 +625,7 @@ void Game::Update(float deltaTime, float totalTime)
 			}
 			else {
 				firetimer = firetimer - deltaTime;
-				campfireEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x, camera->getpositionvec().y + 0.2, camera->getpositionvec().z + 10));
+				campfireEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x, camera->getpositionvec().y + 0.2f, camera->getpositionvec().z + 10));
 				campfireEmitter->Update(deltaTime);
 			}
 		}
@@ -641,7 +641,7 @@ void Game::Update(float deltaTime, float totalTime)
 			}
 			else {
 				smoketimer = smoketimer - deltaTime;
-				gunSmokeEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x-0.1f, camera->getpositionvec().y + 0.7, camera->getpositionvec().z + 10));
+				gunSmokeEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x-0.1f, camera->getpositionvec().y + 0.7f, camera->getpositionvec().z + 10));
 				gunSmokeEmitter->Update(deltaTime);
 			}
 		}
@@ -657,7 +657,7 @@ void Game::Update(float deltaTime, float totalTime)
 	camera->Update();
 	 
 	entity2->SetPosition(camera->getpositionvec().x+.03f, camera->getpositionvec().y, camera->getpositionvec().z+.08f);
-	entity2->SetRotation( 0,-89.55, .1f);
+	entity2->SetRotation( 0,-89.55f, .1f);
 	
 	MoveCharacters(deltaTime);
 	CheckCollision();
@@ -855,7 +855,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		0);
 	////////
 	if (GetAsyncKeyState('R')&&reload==false) {
-		ammoTime = GetTickCount();
+		ammoTime =(float) GetTickCount();
 		reload = true;
 	}
 	if(reload==true&&GetTickCount()- ammoTime>2000){
@@ -1050,12 +1050,12 @@ void Game::Draw(float deltaTime, float totalTime)
 
 void Game::UpdateCameraAxis(int x,int y)
 {
-	float deltaX = x - prevMousePos.x;
-	float deltaY = y - prevMousePos.y;
-	float deltaXAxis = deltaY / 720;
-	float deltaYAxis = deltaX / 720;
-	camera->UpdateXAxis(deltaXAxis);
-	camera->UpdateYAxis(deltaYAxis);
+	LONG deltaX = x - prevMousePos.x;
+	LONG deltaY = y - prevMousePos.y;
+	LONG deltaXAxis = deltaY / 720;
+	LONG deltaYAxis = deltaX / 720;
+	camera->UpdateXAxis((float)deltaXAxis);
+	camera->UpdateYAxis((float)deltaYAxis);
  
 }
 

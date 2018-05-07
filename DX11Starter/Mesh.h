@@ -24,8 +24,8 @@ public:
 private:
 	// Buffers to hold actual geometry data
 	char* name;
-	int terrainWidth = 257.0;
-	int terrainHeight = 257.0;
+	int terrainWidth = 257;
+	int terrainHeight = 257;
 	float heightScale = 15.0;
 
 	ID3D11Buffer* vertexBuffer;
