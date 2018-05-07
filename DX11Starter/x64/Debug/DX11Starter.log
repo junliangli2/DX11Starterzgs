@@ -1,20 +1,5 @@
-﻿  Game.cpp
-d:\users\user\documents\github\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
-d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(292): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(295): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(298): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(430): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(434): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(442): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(446): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(455): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(459): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(546): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(562): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(580): warning C4305: 'argument': truncation from 'double' to 'float'
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(777): warning C4244: '=': conversion from 'DWORD' to 'float', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(972): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
-d:\users\user\documents\github\dx11starterzgs\dx11starter\game.cpp(973): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
-  DX11Starter.vcxproj -> D:\Users\User\Documents\GitHub\DX11Starterzgs\x64\Debug\DX11Starter.exe
+﻿  Mesh.cpp
+d:\program files (x86)\source\dx11starterzgs\dx11starter\simpleshader.h(15): warning C4010: single-line comment contains line-continuation character
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\program files (x86)\source\dx11starterzgs\dx11starter\mesh.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  DX11Starter.vcxproj -> D:\Program Files (x86)\Source\DX11Starterzgs\x64\Debug\DX11Starter.exe

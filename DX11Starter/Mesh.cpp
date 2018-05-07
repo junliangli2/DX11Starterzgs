@@ -282,16 +282,16 @@ Mesh::Mesh(char * fileName, ID3D11Device * device)
 		Vertex* vertices;
 		UINT*   indices;
 		int index1, index2, index3, index4;
-		int m_vertexCount;
+		int vertexCount;
 
 		// Calculate the number of vertices in the 3D terrain model.
-		m_vertexCount = (terrainHeight - 1) * (terrainWidth - 1) * 6;
+		vertexCount = (terrainHeight - 1) * (terrainWidth - 1) * 6;
 
 		// Create the 3D terrain model array.
-		terrainModel = new ModelType[m_vertexCount];
+		terrainModel = new ModelType[vertexCount];
 
-		vertices = new Vertex[m_vertexCount];
-		indices = new unsigned[m_vertexCount];
+		vertices = new Vertex[vertexCount];
+		indices = new unsigned[vertexCount];
 		// Initialize the index into the height map array.
 		index = 0;
 		calculateNormals();
@@ -376,14 +376,14 @@ Mesh::Mesh(char * fileName, ID3D11Device * device)
 				index++;
 			}
 		}
-		for (i = 0; i<m_vertexCount; i++)
+		for (i = 0; i<vertexCount; i++)
 		{
 			vertices[i].Position = XMFLOAT3(terrainModel[i].x, terrainModel[i].y, terrainModel[i].z);
 			vertices[i].UV = XMFLOAT2(terrainModel[i].tu, terrainModel[i].tv);
 			vertices[i].Normal = XMFLOAT3(terrainModel[i].nx, terrainModel[i].ny, terrainModel[i].nz);
 			indices[i] = i;
 		}
-		SetBuffers(&vertices[0], m_vertexCount, &indices[0], m_vertexCount, device);
+		SetBuffers(&vertices[0], vertexCount, &indices[0], vertexCount, device);
 		delete[] bitmapImage;
 		delete[] vertices;
 		delete[] indices;
