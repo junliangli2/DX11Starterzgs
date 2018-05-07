@@ -46,6 +46,8 @@ private:
 	void CreateMaterials();
 	void CreateSkybox();
 	void MoveCharacters(float deltaTime);
+	void CheckCollision();
+	void CheckShooted();
 
 	//Managers
 	 
@@ -108,6 +110,7 @@ private:
 	 
 	//particles
 	Emitter* campfireEmitter;
+	Emitter* gunSmokeEmitter;
 	ID3D11BlendState* particleBlendState;
 	ID3D11DepthStencilState* particleDepthState;
 	
@@ -122,6 +125,7 @@ private:
 
 	ID3D11SamplerState* sample;
 	ID3D11ShaderResourceView* particleSRV;
+	ID3D11ShaderResourceView* smokeSRV;
 	float shadowMapBias;
 
 
@@ -141,5 +145,8 @@ private:
 	 
 	//
 	bool isFiring = false;
+	bool WolfIsShooted = false;
+	bool CatIsShooted = false;
+	bool ElfIsShooted = false;
 };
 

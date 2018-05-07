@@ -93,7 +93,7 @@ void Camera::Update()
 		positionVec = positionVec + XMVector3Cross(upVec, directionVec) * 0.01f;
 	}
 
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	if (GetAsyncKeyState(_SPACE) & 0x8000)
 	{
 		positionVec = positionVec + upVec * 0.001f;
 

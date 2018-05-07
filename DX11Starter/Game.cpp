@@ -66,12 +66,18 @@ Game::~Game()
 	delete entity3;
 	delete entity4;
 	delete entity5;
+	delete entity6;
+	delete entity7;
+	delete entity8;
 	delete m_mesh0;
 	delete m_mesh1;
 	delete m_mesh2;
 	delete m_mesh3;
 	delete m_mesh4;
 	delete m_mesh5;
+	delete m_mesh6;
+	delete m_mesh7;
+	delete m_mesh8;
 	delete camera;
 	pShadowMap->Release();
 	pShadowMapDepthView->Release();
@@ -90,9 +96,11 @@ Game::~Game()
 	delete particlePShader;
 	delete particleVShader;
 	delete campfireEmitter;
+	delete gunSmokeEmitter;
 	particleBlendState->Release();
 	particleDepthState->Release();
 	particleSRV->Release();
+	smokeSRV->Release();
 	particleSample->Release();
 	if (etts.size() > 0) {
 		for (int i = 0; i < etts.size(); i++) {
@@ -279,13 +287,13 @@ void Game::CreateBasicGeometry()
 	entity5->SetPosition(2, -8.3f, 22);
 	entity5->SetRotation(0, 90, 0);
 	entity6->SetScale(1.0f, 1.0f, 1.0f);
-	entity6->SetPosition(-2, -8.4, 23);
+	entity6->SetPosition(-3.2, -9.0, 30);
 	//entity6->SetRotation(0, 90, 0);
 	entity7->SetScale(0.8f, 0.8f, 0.8f);
 	entity7->SetPosition(3.2, -8.7, 30);
 	entity7->SetRotation(0, 90, 0);
 	entity8->SetScale(0.3f, 0.3f, 0.3f);
-	entity8->SetPosition(-2.5, -7.8, 23);
+	entity8->SetPosition(-2.5, -8.6, 30);
 	//entity8->SetRotation(0, 90, 0);
 
 }
@@ -368,6 +376,22 @@ void Game::CreateParticles()
 		particlePShader,
 		particleSRV,
 		device);
+
+	gunSmokeEmitter = new Emitter(
+		1, // numParticles
+		20, //emitRate
+		0.5f, //particleLifetime
+		1.0f, //startSize
+		1.0f, //startSize
+		XMFLOAT4(1, 1.0f, 1.0f, 1.0f),	// Start color
+		XMFLOAT4(1, 1.0f, 1.0f, 1.0f),		// End color
+		XMFLOAT3(0.0f, 0.0f, 0.0f),				// Start velocity
+		XMFLOAT3(0.0f, 0.0f, 0.0f),				// Start position
+		XMFLOAT3(),				// Start acceleration
+		particleVShader,
+		particlePShader,
+		smokeSRV,
+		device);
 }
 
 void Game::CreateSkybox()
@@ -411,6 +435,51 @@ void Game::MoveCharacters(float deltaTime)
 		entity7->SetPosition(entity7TempPos.x, entity7TempPos.y, entity7TempPos.z);
 	}
 	//cout << entity7TempPos.x<<","<< entity7TempPos.y << "," << entity7TempPos.z<<endl;
+
+	//entity6->wolf
+	XMFLOAT3 entity6Direction = XMFLOAT3(1.4*deltaTime*0.1, 1.1 * deltaTime*0.1, -10 * deltaTime*0.1);
+	XMFLOAT3 entity6TempPos = entity6->GetPosition();
+	entity6TempPos = XMFLOAT3(entity6TempPos.x + entity6Direction.x, entity6TempPos.y + entity6Direction.y, entity6TempPos.z + entity6Direction.z);
+	if (entity6TempPos.x > -1.127 && entity6TempPos.z < 15.19) {
+		entity6->SetPosition(-3.2, -9.0, 30);
+	}
+	else {
+		entity6->SetPosition(entity6TempPos.x, entity6TempPos.y, entity6TempPos.z);
+		
+	}
+	
+
+	//entity8
+	XMFLOAT3 entity8Direction = XMFLOAT3(0, 1.4 * deltaTime*0.1, -15 * deltaTime*0.1);
+	XMFLOAT3 entity8TempPos = entity8->GetPosition();
+	entity8TempPos = XMFLOAT3(entity8TempPos.x + entity8Direction.x, entity8TempPos.y + entity8Direction.y, entity8TempPos.z + entity8Direction.z);
+	if (entity8TempPos.y > -7.235 && entity8TempPos.z < 15.38) {
+		entity8->SetPosition(-2.5, -8.6, 30);
+	}
+	else {
+		entity8->SetPosition(entity8TempPos.x, entity8TempPos.y, entity8TempPos.z);
+	}
+	//cout << entity8TempPos.x << "," << entity8TempPos.y << "," << entity8TempPos.z << endl;
+}
+void Game::CheckCollision()
+{
+	if (etts.size() > 0) {
+		for (int i = 0; i < etts.size(); i++) {
+			Entity *bullet = etts.at(i);
+			if (fabs(bullet->GetPosition().x - entity6->GetPosition().x) < 1 && fabs(bullet->GetPosition().y - entity6->GetPosition().y) < 1) {
+				WolfIsShooted = true;
+			}
+
+			if (fabs(bullet->GetPosition().x - entity7->GetPosition().x) < 1 && fabs(bullet->GetPosition().y - entity7->GetPosition().y) < 1) {
+				CatIsShooted = true;
+			}
+
+			if (fabs(bullet->GetPosition().x - entity8->GetPosition().x) < 1 && fabs(bullet->GetPosition().y - entity8->GetPosition().y) < 1) {
+				ElfIsShooted = true;
+			}
+				
+		}
+	}
 }
 // --------------------------------------------------------
 // Handle resizing DirectX "stuff" to match the new window size.
@@ -458,20 +527,47 @@ void Game::Update(float deltaTime, float totalTime)
 	
 	  
 	if (isFiring == true) {
-		campfireEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x, camera->getpositionvec().y+0.2, camera->getpositionvec().z+10));
-		campfireEmitter->Update(deltaTime);
-		static float timer = 0.1f;
-		if (timer < 0) {
+		static bool endFire = false;
+		static bool endSmoke = false;
+		static float firetimer = 0.2f;
+		if (!endFire) {
+			
+			if (firetimer < 0) {
+				firetimer = 0.2f;
+				campfireEmitter->SetPosition(XMFLOAT3(0, -20, 0));//invisible
+				campfireEmitter->Update(0);
+				//isFiring = false;
+				endFire = true;
+			}
+			else {
+				firetimer = firetimer - deltaTime;
+				campfireEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x, camera->getpositionvec().y + 0.2, camera->getpositionvec().z + 10));
+				campfireEmitter->Update(deltaTime);
+			}
+		}
+		
+		static float smoketimer = 0.5f;
+		if (!endSmoke) {
+			
+			if (smoketimer < 0) {
+				smoketimer = 0.5f;
+				gunSmokeEmitter->SetPosition(XMFLOAT3(0, -30, 0));//invisible
+				gunSmokeEmitter->Update(0);
+				endSmoke = true;
+			}
+			else {
+				smoketimer = smoketimer - deltaTime;
+				gunSmokeEmitter->SetPosition(XMFLOAT3(camera->getpositionvec().x-0.1f, camera->getpositionvec().y + 0.7, camera->getpositionvec().z + 10));
+				gunSmokeEmitter->Update(deltaTime);
+			}
+		}
+		
+		if (endSmoke && endFire) {
 			isFiring = false;
-			timer = 0.1f;
+			endSmoke = false;
+			endFire = false;
 		}
-		else {
-			timer =timer-deltaTime;
-		}
-	}
-	else {
-		campfireEmitter->SetPosition(XMFLOAT3(0, -20, 0));//invisible
-		campfireEmitter->Update(deltaTime);
+		
 	}
 	//update the camera
 	camera->Update();
@@ -479,10 +575,10 @@ void Game::Update(float deltaTime, float totalTime)
  
  
 	entity2->SetPosition(camera->getpositionvec().x+.03f, camera->getpositionvec().y, camera->getpositionvec().z+.08f);
- 
 	entity2->SetRotation( 0,-89.55, .1f);
 	
 	MoveCharacters(deltaTime);
+	CheckCollision();
 
 	XMMATRIX V = XMLoadFloat4x4(&camera->GetViewMatrix());
 	XMStoreFloat4x4(&viewMatrix, V); // Transpose for HLSL!
@@ -850,8 +946,9 @@ void Game::Draw(float deltaTime, float totalTime)
 	context->OMSetDepthStencilState(particleDepthState, 0);
 
 	particlePShader->SetSamplerState("trilinear", particleSample);
+	gunSmokeEmitter->Render(context, viewMatrix, projectionMatrix);
 	campfireEmitter->Render(context, viewMatrix, projectionMatrix);
-		
+	
 		
 		
 	context->OMSetBlendState(0, blendArray, 0xffffffff);
@@ -882,6 +979,7 @@ void Game::CreateMaterials()
 	//import particle texture
  
 	CreateWICTextureFromFile(device, context,L"gunFire.jpg", 0, &particleSRV);
+	CreateWICTextureFromFile(device, context, L"smoke.jpg", 0, &smokeSRV);
 
 	// Create a sampler state for texture sampling
 	D3D11_SAMPLER_DESC psamplerDesc = {};
