@@ -194,7 +194,7 @@ void Game::LoadShaders()
 	//Create Texttures
 	material0 = new Material(vertexShader, pixelShader, device, context, L"GrassTest.jpg", L"terrainnormal.jpg");
 	material1 = new Material(vertexShader, pixelShader,device,context,L"rock.jpg", L"rockNormals.jpg");
-	material2 = new Material(vertexShader, pixelShader, device, context, L"T2.bmp", L"rockNormals.jpg");
+	material2 = new Material(vertexShader, pixelShader, device, context, L"gunmat.jpg", L"rockNormals.jpg");
 	material3 = new Material(vertexShader, pixelShader, device, context, L"rock.jpg", L"rockNormals.jpg");
 	material4 = new Material(vertexShader, pixelShader, device, context, L"houseA.jpg", L"houseANM.jpg");
 	material5 = new Material(vertexShader, pixelShader, device, context, L"house1.bmp", L"house1_n.bmp");
@@ -261,7 +261,7 @@ void Game::CreateBasicGeometry()
 	//m_mesh1 = new Mesh(vertices1, 3, indices1, 3, device);
 	//m_mesh2 = new Mesh(vertices2, 4, indices2, 6, device);
 	m_mesh1 = new Mesh("cone.obj", device);
-	m_mesh2 = new Mesh("gaiguode.obj", device);
+	m_mesh2 = new Mesh("shotgun.obj", device);
 	m_mesh0 = new Mesh("terrain-heightmap.bmp", device);
 	m_mesh3 = new Mesh("houseA_obj.obj", device);
 	m_mesh4 = new Mesh("house.obj", device);
@@ -656,9 +656,9 @@ void Game::Update(float deltaTime, float totalTime)
 	//update the camera
 	camera->Update();
 	 
-	entity2->SetPosition(camera->getpositionvec().x+.03f, camera->getpositionvec().y, camera->getpositionvec().z+.08f);
-	entity2->SetRotation( 0,-89.55f, .1f);
-	
+	entity2->SetPosition(camera->getpositionvec().x+.03f, camera->getpositionvec().y-.01f, camera->getpositionvec().z+.25f);
+	entity2->SetRotation( 0,0, .1f);
+	entity2->SetScale(.03f, .03f, .03f);
 	MoveCharacters(deltaTime);
 	CheckCollision();
 	CheckShooted(deltaTime);

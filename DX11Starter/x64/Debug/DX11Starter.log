@@ -1,18 +1,2 @@
-﻿  compilation object save succeeded; see D:\zhegef\DX11Starterzgs\x64\Debug\ParticlePixelShader.cso
-  compilation object save succeeded; see D:\zhegef\DX11Starterzgs\x64\Debug\ParticleVertexShader.cso
-  compilation object save succeeded; see D:\zhegef\DX11Starterzgs\x64\Debug\PixelShader.cso
-  compilation object save succeeded; see D:\zhegef\DX11Starterzgs\x64\Debug\SkyPS.cso
-  compilation object save succeeded; see D:\zhegef\DX11Starterzgs\x64\Debug\SkyVS.cso
-  compilation object save succeeded; see D:\zhegef\DX11Starterzgs\x64\Debug\VertexShader.cso
-  compilation object save succeeded; see D:\zhegef\DX11Starterzgs\x64\Debug\VertexShader1.cso
-  SimpleShader.cpp
-  Mesh.cpp
-  Material.cpp
-  Main.cpp
-  Game.cpp
-  Entity.cpp
-  Emitter.cpp
-  DXCore.cpp
-  Camera.cpp
-  Generating Code...
+﻿  Game.cpp
   DX11Starter.vcxproj -> D:\zhegef\DX11Starterzgs\x64\Debug\DX11Starter.exe
