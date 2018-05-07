@@ -5,6 +5,8 @@
 #include "WICTextureLoader.h"
 #include "DDSTextureLoader.h"
 #include"SimpleMath.h"
+#include <Windows.h>
+#include <mmsystem.h>
 using namespace std;
 
 // For the DirectX Math library
@@ -138,7 +140,7 @@ void Game::Init()
 	// geometric primitives (points, lines or triangles) we want to draw.  
 	// Essentially: "What kind of shape should the GPU draw with our data?"
 	
-
+	PlaySound("bensound.wav",NULL, SND_LOOP | SND_ASYNC);
 	
 
 	CreateSkybox();
@@ -795,6 +797,7 @@ void Game::Draw(float deltaTime, float totalTime)
 			entity123->SetScale(.01f, .01f, .01f);
 			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
 			etts.push_back(entity123);
+			mciSendString("play shoot.wav", NULL, 0, NULL);
 			isFiring = true;
 		}
 
@@ -806,6 +809,7 @@ void Game::Draw(float deltaTime, float totalTime)
 			entity123->SetScale(.01f, .01f, .01f);
 			entity123->SetPosition(camera->getpositionvec().x, camera->getpositionvec().y, camera->getpositionvec().z);
 			etts.push_back(entity123);
+			mciSendString("play shoot.wav", NULL, 0, NULL);
 			isFiring = true;
 		}
 
