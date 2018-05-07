@@ -417,7 +417,7 @@ void Game::CreateParticles()
 
 void Game::CreateSkybox()
 {
-	CreateDDSTextureFromFile(device, L"SunnyCubeMap.dds", 0, &skySRV);
+	CreateDDSTextureFromFile(device, L"sunsetSkybox.dds", 0, &skySRV);
 
 	
 	D3D11_SAMPLER_DESC skysamplerDesc = {}; 
