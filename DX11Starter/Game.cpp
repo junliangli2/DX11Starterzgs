@@ -7,6 +7,7 @@
 #include"SimpleMath.h"
 #include <Windows.h>
 #include <mmsystem.h>
+#include <time.h>
 using namespace std;
 
 // For the DirectX Math library
@@ -21,7 +22,7 @@ using namespace DirectX;
 
 vector<Entity*> etts;
 float ammos = 5;
-float time;
+float ammoTime;
 bool reload = false;
 // hInstance - the application's OS-level handle (unique ID)
 // --------------------------------------------------------
@@ -99,10 +100,12 @@ Game::~Game()
 	delete particleVShader;
 	delete campfireEmitter;
 	delete gunSmokeEmitter;
+	delete explosionEmitter;
 	particleBlendState->Release();
 	particleDepthState->Release();
 	particleSRV->Release();
 	smokeSRV->Release();
+	explosionSRV->Release();
 	particleSample->Release();
 	if (etts.size() > 0) {
 		for (int i = 0; i < etts.size(); i++) {
@@ -394,6 +397,22 @@ void Game::CreateParticles()
 		particlePShader,
 		smokeSRV,
 		device);
+
+	explosionEmitter = new Emitter(
+		1, // numParticles
+		100, //emitRate
+		0.7f, //particleLifetime
+		0.1f, //startSize
+		1.0f, //startSize
+		XMFLOAT4(1, 1.0f, 1.0f, 1.0f),	// Start color
+		XMFLOAT4(1, 1.0f, 1.0f, 1.0f),		// End color
+		XMFLOAT3(0, 0, 0),				// Start velocity
+		XMFLOAT3(0.0f, 0.0f, 0.0f),				// Start position
+		XMFLOAT3(),				// Start acceleration
+		particleVShader,
+		particlePShader,
+		explosionSRV,
+		device);
 }
 
 void Game::CreateSkybox()
@@ -468,18 +487,86 @@ void Game::CheckCollision()
 	if (etts.size() > 0) {
 		for (int i = 0; i < etts.size(); i++) {
 			Entity *bullet = etts.at(i);
-			if (fabs(bullet->GetPosition().x - entity6->GetPosition().x) < 1 && fabs(bullet->GetPosition().y - entity6->GetPosition().y) < 1) {
+			if (fabs(bullet->GetPosition().x - entity6->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity6->GetPosition().y) < 0.4) {
 				WolfIsShooted = true;
 			}
 
-			if (fabs(bullet->GetPosition().x - entity7->GetPosition().x) < 1 && fabs(bullet->GetPosition().y - entity7->GetPosition().y) < 1) {
+			if (fabs(bullet->GetPosition().x - entity7->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity7->GetPosition().y) < 0.5) {
 				CatIsShooted = true;
 			}
 
-			if (fabs(bullet->GetPosition().x - entity8->GetPosition().x) < 1 && fabs(bullet->GetPosition().y - entity8->GetPosition().y) < 1) {
+			if (fabs(bullet->GetPosition().x - entity8->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity8->GetPosition().y) < 0.4) {
 				ElfIsShooted = true;
 			}
 				
+		}
+	}
+}
+void Game::CheckShooted(float deltaTime)
+{	
+	static float firetimer = 0.7f;
+	if (WolfIsShooted) {
+
+		if (firetimer < 0) {
+			firetimer = 0.7f;
+			explosionEmitter->SetPosition(XMFLOAT3(0, -20, 0));//invisible
+			explosionEmitter->Update(0);
+			explosionEmitter->ResetEmitter();
+			WolfIsShooted = false;
+			
+		}
+		else if(firetimer==0.7f){
+			firetimer = firetimer - deltaTime;
+			explosionEmitter->SetPosition(XMFLOAT3(entity6->GetPosition().x, entity6->GetPosition().y+0.5 , entity6->GetPosition().z));
+			explosionEmitter->Update(deltaTime);
+			entity6->SetPosition(-3.2, -9.0, 30);
+		}
+		else {
+			firetimer = firetimer - deltaTime;
+			explosionEmitter->Update(deltaTime);
+		}
+	}
+	static float cattimer = 0.7f;
+	if (CatIsShooted) {
+		if (cattimer < 0) {
+			cattimer = 0.7f;
+			explosionEmitter->SetPosition(XMFLOAT3(0, -20, 0));//invisible
+			explosionEmitter->Update(0);
+			explosionEmitter->ResetEmitter();
+			CatIsShooted = false;
+
+		}
+		else if (cattimer == 0.7f) {
+			cattimer = cattimer - deltaTime;
+			explosionEmitter->SetPosition(XMFLOAT3(entity7->GetPosition().x, entity7->GetPosition().y + 0.5, entity7->GetPosition().z));
+			explosionEmitter->Update(deltaTime);
+			entity7->SetPosition(3.2, -8.7, 30);
+		}
+		else {
+			cattimer = cattimer - deltaTime;
+			explosionEmitter->Update(deltaTime);
+		}
+	}
+
+	static float elftimer = 0.7f;
+	if (ElfIsShooted) {
+		if (elftimer < 0) {
+			elftimer = 0.7f;
+			explosionEmitter->SetPosition(XMFLOAT3(0, -20, 0));//invisible
+			explosionEmitter->Update(0);
+			explosionEmitter->ResetEmitter();
+			ElfIsShooted = false;
+
+		}
+		else if (elftimer == 0.7f) {
+			elftimer = elftimer - deltaTime;
+			explosionEmitter->SetPosition(XMFLOAT3(entity8->GetPosition().x, entity8->GetPosition().y + 0.5, entity8->GetPosition().z));
+			explosionEmitter->Update(deltaTime);
+			entity8->SetPosition(-2.5, -8.6, 30);
+		}
+		else {
+			elftimer = elftimer - deltaTime;
+			explosionEmitter->Update(deltaTime);
 		}
 	}
 }
@@ -512,9 +599,6 @@ float rotz = 0;
 void Game::Update(float deltaTime, float totalTime)
 {
 
-
-
-
 	XMMATRIX shProj = XMMatrixOrthographicLH(60, 60, 0.1f, 300.0f);
 	XMMATRIX shView = XMMatrixLookAtLH(
 		XMVectorSet(0, 20,-20, 0),
@@ -525,9 +609,7 @@ void Game::Update(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
-	
-	
-	  
+
 	if (isFiring == true) {
 		static bool endFire = false;
 		static bool endSmoke = false;
@@ -574,13 +656,12 @@ void Game::Update(float deltaTime, float totalTime)
 	//update the camera
 	camera->Update();
 	 
- 
- 
 	entity2->SetPosition(camera->getpositionvec().x+.03f, camera->getpositionvec().y, camera->getpositionvec().z+.08f);
 	entity2->SetRotation( 0,-89.55, .1f);
 	
 	MoveCharacters(deltaTime);
 	CheckCollision();
+	CheckShooted(deltaTime);
 
 	XMMATRIX V = XMLoadFloat4x4(&camera->GetViewMatrix());
 	XMStoreFloat4x4(&viewMatrix, V); // Transpose for HLSL!
@@ -774,10 +855,10 @@ void Game::Draw(float deltaTime, float totalTime)
 		0);
 	////////
 	if (GetAsyncKeyState('R')&&reload==false) {
-		time = GetTickCount();
+		ammoTime = GetTickCount();
 		reload = true;
 	}
-	if(reload==true&&GetTickCount()-time>2000){
+	if(reload==true&&GetTickCount()- ammoTime>2000){
 		reload = false;
 		ammos = 5;
 	
@@ -952,7 +1033,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	particlePShader->SetSamplerState("trilinear", particleSample);
 	gunSmokeEmitter->Render(context, viewMatrix, projectionMatrix);
 	campfireEmitter->Render(context, viewMatrix, projectionMatrix);
-	
+	explosionEmitter->Render(context, viewMatrix, projectionMatrix);
 		
 		
 	context->OMSetBlendState(0, blendArray, 0xffffffff);
@@ -984,6 +1065,7 @@ void Game::CreateMaterials()
  
 	CreateWICTextureFromFile(device, context,L"gunFire.jpg", 0, &particleSRV);
 	CreateWICTextureFromFile(device, context, L"smoke.jpg", 0, &smokeSRV);
+	CreateWICTextureFromFile(device, context, L"explosion.jpg", 0, &explosionSRV);
 
 	// Create a sampler state for texture sampling
 	D3D11_SAMPLER_DESC psamplerDesc = {};

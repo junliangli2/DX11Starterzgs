@@ -47,7 +47,7 @@ private:
 	void CreateSkybox();
 	void MoveCharacters(float deltaTime);
 	void CheckCollision();
-	void CheckShooted();
+	void CheckShooted(float deltaTime);
 
 	//Managers
 	 
@@ -111,6 +111,7 @@ private:
 	//particles
 	Emitter* campfireEmitter;
 	Emitter* gunSmokeEmitter;
+	Emitter* explosionEmitter;
 	ID3D11BlendState* particleBlendState;
 	ID3D11DepthStencilState* particleDepthState;
 	
@@ -126,6 +127,7 @@ private:
 	ID3D11SamplerState* sample;
 	ID3D11ShaderResourceView* particleSRV;
 	ID3D11ShaderResourceView* smokeSRV;
+	ID3D11ShaderResourceView* explosionSRV;
 	float shadowMapBias;
 
 

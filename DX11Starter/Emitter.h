@@ -37,6 +37,8 @@ public:
 	void CopyToParticleVertex(int particleIndex);
 	void SpawnParticle();
 	void CopyParticleDataToGPU(ID3D11DeviceContext* context);
+	void SetVelocity(DirectX::XMFLOAT3 newVelocity);
+	void ResetEmitter();
 	
 
 private:

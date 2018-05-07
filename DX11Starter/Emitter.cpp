@@ -152,6 +152,13 @@ void Emitter::CopyParticleDataToGPU(ID3D11DeviceContext * context)
 
 }
 
+void Emitter::SetVelocity(DirectX::XMFLOAT3 newVelocity)
+{
+	initialVelocity = newVelocity;
+}
+
+
+
 void Emitter::CopyToParticleVertex(int particleIndex)
 {
 	//4 vertices per particle
@@ -176,7 +183,14 @@ void Emitter::CopyToParticleVertex(int particleIndex)
 	particleVertices[i + 3].color = particles[particleIndex].color;
 }
 
-
+void Emitter::ResetEmitter()
+{
+	firstAliveParticle = 0;
+	firstDeadParticle = 0;
+	aliveParticleCount = 0;
+	timeSinceEmission = 0;
+	particles = new Particle[maxParticles];
+}
 void Emitter::Update(float deltaTime)
 {
 	//update all particles
@@ -185,13 +199,15 @@ void Emitter::Update(float deltaTime)
 		for (int i = firstAliveParticle; i < firstDeadParticle; i++)
 			ParticleUpdate(deltaTime, i);
 	}
-	else
+	else if(aliveParticleCount > 0)
 	{
 		for (int i = firstAliveParticle; i < maxParticles; i++)
 			ParticleUpdate(deltaTime, i);
 		for (int i = 0; i < firstDeadParticle; i++)
 			ParticleUpdate(deltaTime, i);
 	}
+	//if(timeSinceEmission==0)
+		//SpawnParticle();
 
 	//Add to the time
 	timeSinceEmission += deltaTime;
