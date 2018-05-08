@@ -446,7 +446,7 @@ void Game::CreateSkybox()
 void Game::MoveCharacters(float deltaTime)
 {
 	//entity7->cat
-	XMFLOAT3 entity7Direction = XMFLOAT3(-6.4f*deltaTime*0.1f, 1 * deltaTime*0.1f, -7 * deltaTime*0.1f);
+	XMFLOAT3 entity7Direction = XMFLOAT3(-6.4f*deltaTime*0.1f, 3 * deltaTime*0.1f, -7 * deltaTime*0.1f);
 	XMFLOAT3 entity7TempPos = entity7->GetPosition();
 	entity7TempPos = XMFLOAT3(entity7TempPos.x + entity7Direction.x, entity7TempPos.y + entity7Direction.y, entity7TempPos.z + entity7Direction.z);
 	if (entity7TempPos.x < -10 && entity7TempPos.z < 14.91f) {
@@ -458,7 +458,7 @@ void Game::MoveCharacters(float deltaTime)
 	//cout << entity7TempPos.x<<","<< entity7TempPos.y << "," << entity7TempPos.z<<endl;
 
 	//entity6->wolf
-	XMFLOAT3 entity6Direction = XMFLOAT3(1.4f*deltaTime*0.1f, 1.1f * deltaTime*0.1f, -10 * deltaTime*0.1f);
+	XMFLOAT3 entity6Direction = XMFLOAT3(1.4f*deltaTime*0.1f, 3.1f * deltaTime*0.1f, -10 * deltaTime*0.1f);
 	XMFLOAT3 entity6TempPos = entity6->GetPosition();
 	entity6TempPos = XMFLOAT3(entity6TempPos.x + entity6Direction.x, entity6TempPos.y + entity6Direction.y, entity6TempPos.z + entity6Direction.z);
 	if (entity6TempPos.x > -1.127f && entity6TempPos.z < 15.19f) {
@@ -471,7 +471,7 @@ void Game::MoveCharacters(float deltaTime)
 	
 
 	//entity8
-	XMFLOAT3 entity8Direction = XMFLOAT3(0, 1.4f * deltaTime*0.1f, -15 * deltaTime*0.1f);
+	XMFLOAT3 entity8Direction = XMFLOAT3(0, 3.4f * deltaTime*0.1f, -15 * deltaTime*0.1f);
 	XMFLOAT3 entity8TempPos = entity8->GetPosition();
 	entity8TempPos = XMFLOAT3(entity8TempPos.x + entity8Direction.x, entity8TempPos.y + entity8Direction.y, entity8TempPos.z + entity8Direction.z);
 	if (entity8TempPos.y > -7.235f && entity8TempPos.z < 15.38f) {
@@ -487,16 +487,19 @@ void Game::CheckCollision()
 	if (etts.size() > 0) {
 		for (int i = 0; i < etts.size(); i++) {
 			Entity *bullet = etts.at(i);
-			if (fabs(bullet->GetPosition().x - entity6->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity6->GetPosition().y) < 0.4) {
+			if (fabs(bullet->GetPosition().x - entity6->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity6->GetPosition().y) < 0.4 && !WolfIsShooted) {
 				WolfIsShooted = true;
+				//mciSendString("play explosion.mp3", NULL, 0, NULL);
 			}
 
-			if (fabs(bullet->GetPosition().x - entity7->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity7->GetPosition().y) < 0.5) {
+			if (fabs(bullet->GetPosition().x - entity7->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity7->GetPosition().y) < 0.5 && !CatIsShooted) {
 				CatIsShooted = true;
+				//mciSendString("play explosion.mp3", NULL, 0, NULL);
 			}
 
-			if (fabs(bullet->GetPosition().x - entity8->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity8->GetPosition().y) < 0.4) {
+			if (fabs(bullet->GetPosition().x - entity8->GetPosition().x) < 0.4 && fabs(bullet->GetPosition().y - entity8->GetPosition().y) < 0.4 && !ElfIsShooted) {
 				ElfIsShooted = true;
+				//mciSendString("play explosion.mp3", NULL, 0, NULL);
 			}
 				
 		}
@@ -516,10 +519,14 @@ void Game::CheckShooted(float deltaTime)
 			
 		}
 		else if(firetimer==0.7f){
+			//mciSendString("play reload.aiff", NULL, 0, NULL);
 			firetimer = firetimer - deltaTime;
 			explosionEmitter->SetPosition(XMFLOAT3(entity6->GetPosition().x, entity6->GetPosition().y+0.5f , entity6->GetPosition().z));
 			explosionEmitter->Update(deltaTime);
 			entity6->SetPosition(-3.2f, -9.0f, 30);
+			score += 100;
+			//mciSendString("play explosion.mp3", NULL, 0, NULL);
+			
 		}
 		else {
 			firetimer = firetimer - deltaTime;
@@ -537,10 +544,14 @@ void Game::CheckShooted(float deltaTime)
 
 		}
 		else if (cattimer == 0.7f) {
+			//mciSendString("play reload.aiff", NULL, 0, NULL);
 			cattimer = cattimer - deltaTime;
 			explosionEmitter->SetPosition(XMFLOAT3(entity7->GetPosition().x, entity7->GetPosition().y + 0.5f, entity7->GetPosition().z));
 			explosionEmitter->Update(deltaTime);
 			entity7->SetPosition(3.2f, -8.7f, 30);
+			score += 10;
+			//mciSendString("play explosion.mp3", NULL, 0, NULL);
+			
 		}
 		else {
 			cattimer = cattimer - deltaTime;
@@ -559,14 +570,19 @@ void Game::CheckShooted(float deltaTime)
 
 		}
 		else if (elftimer == 0.7f) {
+			//mciSendString("play reload.aiff", NULL, 0, NULL);
+
 			elftimer = elftimer - deltaTime;
 			explosionEmitter->SetPosition(XMFLOAT3(entity8->GetPosition().x, entity8->GetPosition().y + 0.5f, entity8->GetPosition().z));
 			explosionEmitter->Update(deltaTime);
 			entity8->SetPosition(-2.5f, -8.6f, 30);
+			score += 50;
+			//mciSendString("play explosion.mp3", NULL, 0, NULL);
 		}
 		else {
 			elftimer = elftimer - deltaTime;
 			explosionEmitter->Update(deltaTime);
+
 		}
 	}
 }
@@ -857,6 +873,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	if (GetAsyncKeyState('R')&&reload==false) {
 		ammoTime =(float) GetTickCount();
 		reload = true;
+		mciSendString("play reload.aiff", NULL, 0, NULL);
 	}
 	if(reload==true&&GetTickCount()- ammoTime>2000){
 		reload = false;
@@ -1006,7 +1023,8 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	context->RSSetState(0);
 	context->OMSetDepthStencilState(0, 0);
-	ammo->Begin(); font->DrawString(ammo.get(), (L"Score:" + to_wstring(ammos)).c_str(), SimpleMath::Vector2(1000, 50));
+	ammo->Begin(); 
+	font->DrawString(ammo.get(), (L"Score:" + to_wstring(score)).c_str(), SimpleMath::Vector2(1000, 50));
 	if (ammos > 0) {
 		
 	ammo->Draw(ammoTexture, SimpleMath::Vector2(10, 10));

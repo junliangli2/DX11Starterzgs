@@ -1,0 +1,6 @@
+﻿  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Release\ParticlePixelShader.cso
+  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Release\ParticleVertexShader.cso
+  compilation object save succeeded; see C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\x64\Release\PixelShader.cso
+C:\Users\jl466\Desktop\DX11Starterzgs_329\DX11Starterzgs\DX11Starter\SkyPS.hlsl(18,34-44): error X4502: invalid vs_2_0 output semantic 'SV_TARGET'
+  
+  compilation failed; no code produced

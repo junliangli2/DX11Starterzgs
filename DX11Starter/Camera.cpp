@@ -79,10 +79,12 @@ void Camera::Update()
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
 		positionVec = positionVec + directionVec * 0.01f;
+		//positionVec = positionVec + upVec * 0.01f;
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
 		positionVec = positionVec - directionVec * 0.01f;
+		//positionVec = positionVec - upVec * 0.01f;
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{

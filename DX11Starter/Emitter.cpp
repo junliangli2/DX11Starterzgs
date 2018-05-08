@@ -189,6 +189,7 @@ void Emitter::ResetEmitter()
 	firstDeadParticle = 0;
 	aliveParticleCount = 0;
 	timeSinceEmission = 0;
+	delete[] particles;
 	particles = new Particle[maxParticles];
 }
 void Emitter::Update(float deltaTime)

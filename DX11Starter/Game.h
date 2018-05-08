@@ -150,5 +150,6 @@ private:
 	bool WolfIsShooted = false;
 	bool CatIsShooted = false;
 	bool ElfIsShooted = false;
+	int score = 0;
 };
 
